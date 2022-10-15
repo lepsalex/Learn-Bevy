@@ -61,7 +61,7 @@ fn spawn_level(
             ..default()
         })
         .insert(Tower {
-            shooting_timer: Timer::from_seconds(1.0, true),
+            shooting_timer: Timer::from_seconds(2.0, true),
             bullet_offset: Vec3::new(0.0, 0.2, 0.5),
         })
         .insert(Name::new("Tower"));
