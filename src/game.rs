@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_mod_picking::Selection;
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
@@ -26,6 +27,7 @@ impl Plugin for GamePlugin {
         app.register_type::<Lifetime>()
             .register_type::<Health>()
             .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
+            .add_system(selection_debug_logging)
             .add_system(entity_despawn)
             .add_system(death);
     }
@@ -38,6 +40,14 @@ fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
         tomato_scene: assets.load("Tomato.glb#Scene0"),
         target_scene: assets.load("Target.glb#Scene0"),
     });
+}
+
+fn selection_debug_logging(selection: Query<(&Name, &Selection)>) {
+    for (name, selection) in &selection {
+        if selection.selected() {
+            info!("{} is selected", name);
+        }
+    }
 }
 
 fn entity_despawn(

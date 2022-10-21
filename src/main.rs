@@ -12,8 +12,9 @@ pub use physics::*;
 pub use target::*;
 pub use tower::*;
 
-use bevy::{prelude::*, utils::FloatOrd};
+use bevy::{pbr::NotShadowCaster, prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_mod_picking::{DefaultPickingPlugins, Highlighting, PickableBundle};
 use bevy_rapier3d::{
     prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
     render::RapierDebugRenderPlugin,
@@ -35,6 +36,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         // Inspector Plugin
         .add_plugin(WorldInspectorPlugin::new())
+        // Mod Picking
+        .add_plugins(DefaultPickingPlugins)
         // Physics
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
         .add_plugin(RapierDebugRenderPlugin::default())
@@ -68,13 +71,32 @@ fn spawn_level(
         })
         .insert(Name::new("Ground"));
 
-    // Spawn Tower
+    // Spawn Tower Base
+    let default_collider_color = materials.add(Color::rgba(0.3, 0.5, 0.3, 0.3).into());
+    let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
+
     commands
-        .spawn_bundle(SceneBundle {
-            scene: game_assets.tower_base_scene.clone(),
-            ..default()
+        .spawn_bundle(SpatialBundle::from_transform(Transform::from_xyz(
+            0.0, 0.8, 0.0,
+        )))
+        .insert(Name::new("Tower_Base"))
+        .insert(meshes.add(shape::Capsule::default().into()))
+        .insert(Highlighting {
+            initial: default_collider_color.clone(),
+            hovered: Some(selected_collider_color.clone()),
+            pressed: Some(selected_collider_color.clone()),
+            selected: Some(selected_collider_color.clone()),
         })
-        .insert(Name::new("Tower"));
+        .insert(default_collider_color)
+        .insert(NotShadowCaster)
+        .insert_bundle(PickableBundle::default())
+        .with_children(|commands| {
+            commands.spawn_bundle(SceneBundle {
+                scene: game_assets.tower_base_scene.clone(),
+                transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                ..default()
+            });
+        });
 
     // Spawn Main Light
     commands
