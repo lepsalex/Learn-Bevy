@@ -17,7 +17,7 @@ use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_mod_picking::{DefaultPickingPlugins, Highlighting, PickableBundle};
 use bevy_rapier3d::{
     prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
-    render::RapierDebugRenderPlugin,
+    render::{DebugRenderMode, RapierDebugRenderPlugin},
 };
 
 pub const WIDTH: f32 = 1280.0;
@@ -40,7 +40,10 @@ fn main() {
         .add_plugins(DefaultPickingPlugins)
         // Physics
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
-        .add_plugin(RapierDebugRenderPlugin::default())
+        .add_plugin(RapierDebugRenderPlugin {
+            mode: DebugRenderMode::COLLIDER_SHAPES,
+            ..default()
+        })
         // Our Plugins
         .add_plugin(GamePlugin)
         .add_plugin(CameraPlugin)
@@ -116,14 +119,19 @@ fn spawn_level(
         let x_pos = -2.0 * n as f32;
 
         commands
-            .spawn_bundle(SceneBundle {
-                scene: game_assets.target_scene.clone(),
+            .spawn_bundle(SpatialBundle {
                 transform: Transform::from_xyz(x_pos, 0.4, 2.5),
                 ..default()
             })
             .insert(Target { speed: 0.3 })
             .insert(Health { value: 3 })
             .insert_bundle(PhysicsBundle::moving_entity_sphere(0.4))
-            .insert(Name::new("Target"));
+            .insert(Name::new("Target"))
+            .with_children(|commands| {
+                commands.spawn_bundle(SceneBundle {
+                    scene: game_assets.target_scene.clone(),
+                    ..default()
+                });
+            });
     }
 }

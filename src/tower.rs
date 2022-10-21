@@ -15,8 +15,8 @@ pub struct TowerPlugin;
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Tower>()
-        .add_system(build_tower)
-        .add_system(tower_shooting);
+            .add_system(build_tower)
+            .add_system(tower_shooting);
     }
 }
 
@@ -24,7 +24,7 @@ fn build_tower(
     mut commands: Commands,
     selection: Query<(Entity, &Selection, &Transform)>,
     keyboard: Res<Input<KeyCode>>,
-    assets: Res<GameAssets>
+    assets: Res<GameAssets>,
 ) {
     if keyboard.just_pressed(KeyCode::Space) {
         for (entity, selection, transform) in &selection {
@@ -81,11 +81,11 @@ fn tower_shooting(
             if let Some(bullet_direction) = bullet_direction {
                 commands.entity(tower_entity).with_children(|commands| {
                     commands
-                        .spawn_bundle(SceneBundle {
-                            scene: game_assets.tomato_scene.clone(),
+                        .spawn_bundle(SpatialBundle {
                             transform: Transform::from_translation(tower.bullet_offset),
                             ..default()
                         })
+                        .insert(Name::new("Bullet"))
                         .insert(Lifetime {
                             timer: Timer::from_seconds(1000.0, false),
                         })
@@ -94,7 +94,12 @@ fn tower_shooting(
                             speed: 2.5,
                         })
                         .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
-                        .insert(Name::new("Bullet"));
+                        .with_children(|commands| {
+                            commands.spawn_bundle(SceneBundle {
+                                scene: game_assets.tomato_scene.clone(),
+                                ..default()
+                            });
+                        });
                 });
             }
         }
