@@ -3,12 +3,14 @@ mod game;
 mod physics;
 mod target;
 mod tower;
+mod camera;
 
 pub use bullet::*;
 pub use game::*;
+pub use physics::*;
 pub use target::*;
 pub use tower::*;
-pub use physics::*;
+pub use camera::*;
 
 use bevy::{prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::WorldInspectorPlugin;
@@ -38,12 +40,12 @@ fn main() {
         .add_plugin(RapierDebugRenderPlugin::default())
         // Our Plugins
         .add_plugin(GamePlugin)
+        .add_plugin(CameraPlugin)
         .add_plugin(TowerPlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(BulletPlugin)
         // Level Systems
         .add_startup_system(spawn_level)
-        .add_startup_system(spawn_camera)
         .run();
 }
 
@@ -59,7 +61,7 @@ fn spawn_level(
     // Spawn Ground
     commands
         .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 5.0 })),
+            mesh: meshes.add(Mesh::from(shape::Plane { size: 10.0 })),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
         })
@@ -108,13 +110,4 @@ fn spawn_level(
             .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.4, 0.4, 0.4)))
             .insert(Name::new("Target"));
     }
-}
-
-fn spawn_camera(mut commands: Commands) {
-    commands
-        .spawn_bundle(Camera3dBundle {
-            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
-            ..default()
-        })
-        .insert(Name::new("Main Camera"));
 }
