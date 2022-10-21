@@ -1,5 +1,6 @@
 mod bullet;
 mod game;
+mod physics;
 mod target;
 mod tower;
 
@@ -7,9 +8,14 @@ pub use bullet::*;
 pub use game::*;
 pub use target::*;
 pub use tower::*;
+pub use physics::*;
 
 use bevy::{prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_rapier3d::{
+    prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
+    render::RapierDebugRenderPlugin,
+};
 
 pub const WIDTH: f32 = 1280.0;
 pub const HEIGHT: f32 = 720.0;
@@ -27,6 +33,9 @@ fn main() {
         .add_plugins(DefaultPlugins)
         // Inspector Plugin
         .add_plugin(WorldInspectorPlugin::new())
+        // Physics
+        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(RapierDebugRenderPlugin::default())
         // Our Plugins
         .add_plugin(GamePlugin)
         .add_plugin(TowerPlugin)
@@ -42,7 +51,11 @@ fn spawn_level(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut rapier_config: ResMut<RapierConfiguration>,
 ) {
+    // set gravity
+    rapier_config.gravity = Vec3::ZERO;
+
     // Spawn Ground
     commands
         .spawn_bundle(PbrBundle {
@@ -92,6 +105,7 @@ fn spawn_level(
             })
             .insert(Target { speed: 0.3 })
             .insert(Health { value: 3 })
+            .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.4, 0.4, 0.4)))
             .insert(Name::new("Target"));
     }
 }
