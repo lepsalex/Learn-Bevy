@@ -10,7 +10,7 @@ impl Plugin for CameraPlugin {
 }
 
 const MAIN_CAMERA_SPEED: f32 = 3.0;
-const MAIN_CAMERA_ROTATION_SPEED: f32 = 0.3;
+const MAIN_CAMERA_ROTATION_SPEED: f32 = 1.0;
 
 fn spawn_main_camera(mut commands: Commands) {
     commands

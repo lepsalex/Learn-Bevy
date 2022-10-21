@@ -1,16 +1,16 @@
 mod bullet;
+mod camera;
 mod game;
 mod physics;
 mod target;
 mod tower;
-mod camera;
 
 pub use bullet::*;
+pub use camera::*;
 pub use game::*;
 pub use physics::*;
 pub use target::*;
 pub use tower::*;
-pub use camera::*;
 
 use bevy::{prelude::*, utils::FloatOrd};
 use bevy_inspector_egui::WorldInspectorPlugin;
@@ -54,14 +54,15 @@ fn spawn_level(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut rapier_config: ResMut<RapierConfiguration>,
+    game_assets: Res<GameAssets>,
 ) {
-    // set gravity
+    // Set Gravity
     rapier_config.gravity = Vec3::ZERO;
 
     // Spawn Ground
     commands
         .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 10.0 })),
+            mesh: meshes.add(Mesh::from(shape::Plane { size: 50.0 })),
             material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
             ..default()
         })
@@ -69,15 +70,9 @@ fn spawn_level(
 
     // Spawn Tower
     commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
-            material: materials.add(Color::rgb(0.67, 0.84, 0.92).into()),
-            transform: Transform::from_xyz(0.0, 0.5, 0.0),
+        .spawn_bundle(SceneBundle {
+            scene: game_assets.tower_base_scene.clone(),
             ..default()
-        })
-        .insert(Tower {
-            shooting_timer: Timer::from_seconds(2.0, true),
-            bullet_offset: Vec3::new(0.0, 0.2, 0.5),
         })
         .insert(Name::new("Tower"));
 
@@ -99,15 +94,14 @@ fn spawn_level(
         let x_pos = -2.0 * n as f32;
 
         commands
-            .spawn_bundle(PbrBundle {
-                mesh: meshes.add(Mesh::from(shape::Cube { size: 0.4 })),
-                material: materials.add(Color::rgb(0.67, 0.84, 0.92).into()),
-                transform: Transform::from_xyz(x_pos, 0.2, 1.5),
+            .spawn_bundle(SceneBundle {
+                scene: game_assets.target_scene.clone(),
+                transform: Transform::from_xyz(x_pos, 0.4, 2.5),
                 ..default()
             })
             .insert(Target { speed: 0.3 })
             .insert(Health { value: 3 })
-            .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.4, 0.4, 0.4)))
+            .insert_bundle(PhysicsBundle::moving_entity_sphere(0.4))
             .insert(Name::new("Target"));
     }
 }

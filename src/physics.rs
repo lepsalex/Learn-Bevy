@@ -13,12 +13,25 @@ pub struct PhysicsBundle {
 }
 
 impl PhysicsBundle {
-    pub fn moving_entity(size: Vec3) -> Self {
+    pub fn moving_entity_cube(size: Vec3) -> Self {
         Self {
             flags: ActiveEvents::COLLISION_EVENTS,
             active_collision_types: ActiveCollisionTypes::default()
                 | ActiveCollisionTypes::KINEMATIC_KINEMATIC,
             collider: Collider::cuboid(size.x / 2., size.y / 2., size.z / 2.),
+            colliding_entities: CollidingEntities::default(),
+            rigid_body: RigidBody::KinematicPositionBased,
+            rotation_constraint: LockedAxes::ROTATION_LOCKED,
+            velocity: Velocity::zero(),
+        }
+    }
+
+    pub fn moving_entity_sphere(radius: f32) -> Self {
+        Self {
+            flags: ActiveEvents::COLLISION_EVENTS,
+            active_collision_types: ActiveCollisionTypes::default()
+                | ActiveCollisionTypes::KINEMATIC_KINEMATIC,
+            collider: Collider::ball(radius),
             colliding_entities: CollidingEntities::default(),
             rigid_body: RigidBody::KinematicPositionBased,
             rotation_constraint: LockedAxes::ROTATION_LOCKED,

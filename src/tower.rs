@@ -54,7 +54,7 @@ fn tower_shooting(
                             direction: bullet_direction,
                             speed: 2.5,
                         })
-                        .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.2, 0.2, 0.)))
+                        .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
                         .insert(Name::new("Bullet"));
                 });
             }

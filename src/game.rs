@@ -25,7 +25,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Lifetime>()
             .register_type::<Health>()
-            .add_startup_system(asset_loading)
+            .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
             .add_system(entity_despawn)
             .add_system(death);
     }
