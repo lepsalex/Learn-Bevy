@@ -21,7 +21,7 @@ fn tower_shooting(
     mut commands: Commands,
     mut towers: Query<(Entity, &mut Tower, &GlobalTransform)>,
     targets: Query<&GlobalTransform, With<Target>>,
-    bullet_assets: Res<GameAssets>,
+    game_assets: Res<GameAssets>,
     time: Res<Time>,
 ) {
     for (tower_entity, mut tower, transform) in &mut towers {
@@ -43,7 +43,7 @@ fn tower_shooting(
                 commands.entity(tower_entity).with_children(|commands| {
                     commands
                         .spawn_bundle(SceneBundle {
-                            scene: bullet_assets.bullet_scene.clone(),
+                            scene: game_assets.tomato_scene.clone(),
                             transform: Transform::from_translation(tower.bullet_offset),
                             ..default()
                         })
@@ -54,7 +54,7 @@ fn tower_shooting(
                             direction: bullet_direction,
                             speed: 2.5,
                         })
-                        .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.2, 0.2, 0.2)))
+                        .insert_bundle(PhysicsBundle::moving_entity(Vec3::new(0.2, 0.2, 0.)))
                         .insert(Name::new("Bullet"));
                 });
             }

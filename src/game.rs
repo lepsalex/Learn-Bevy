@@ -13,7 +13,10 @@ pub struct Health {
 }
 
 pub struct GameAssets {
-    pub bullet_scene: Handle<Scene>,
+    pub tower_base_scene: Handle<Scene>,
+    pub tomato_tower_scene: Handle<Scene>,
+    pub tomato_scene: Handle<Scene>,
+    pub target_scene: Handle<Scene>,
 }
 
 pub struct GamePlugin;
@@ -30,7 +33,10 @@ impl Plugin for GamePlugin {
 
 fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
     commands.insert_resource(GameAssets {
-        bullet_scene: assets.load("Bullet.glb#Scene0"),
+        tower_base_scene: assets.load("TowerBase.glb#Scene0"),
+        tomato_tower_scene: assets.load("TomatoTower.glb#Scene0"),
+        tomato_scene: assets.load("Tomato.glb#Scene0"),
+        target_scene: assets.load("Target.glb#Scene0"),
     });
 }
 
