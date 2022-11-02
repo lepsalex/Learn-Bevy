@@ -13,7 +13,8 @@ pub use target::*;
 pub use tower::*;
 
 use bevy::{pbr::NotShadowCaster, prelude::*, utils::FloatOrd};
-use bevy_inspector_egui::WorldInspectorPlugin;
+// use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_editor_pls::prelude::*;
 use bevy_mod_picking::{DefaultPickingPlugins, Highlighting, PickableBundle};
 use bevy_rapier3d::{
     prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
@@ -35,7 +36,7 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         // Inspector Plugin
-        .add_plugin(WorldInspectorPlugin::new())
+        .add_plugin(EditorPlugin)
         // Mod Picking
         .add_plugins(DefaultPickingPlugins)
         // Physics

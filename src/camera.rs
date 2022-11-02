@@ -1,11 +1,16 @@
 use bevy::prelude::*;
 use bevy_mod_picking::PickingCameraBundle;
 
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct GameCamera {}
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_main_camera)
+        app.register_type::<GameCamera>()
+        .add_startup_system(spawn_main_camera)
         .add_system(camera_controls);
     }
 }
@@ -20,12 +25,13 @@ fn spawn_main_camera(mut commands: Commands) {
             ..default()
         })
         .insert_bundle(PickingCameraBundle::default())
+        .insert(GameCamera{})
         .insert(Name::new("Main Camera"));
 }
 
 fn camera_controls(
     keyboard: Res<Input<KeyCode>>,
-    mut camera_query: Query<&mut Transform, With<Camera3d>>,
+    mut camera_query: Query<&mut Transform, With<GameCamera>>,
     time: Res<Time>,
 ) {
     // WARNING: This will panic if we ever spawn more than one camera!
