@@ -21,12 +21,12 @@ pub fn spawn_level(
 
     // Spawn Ground
     commands
-        .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Plane { size: 50.0 })),
-            material: materials.add(Color::rgb(0.3, 0.5, 0.3).into()),
+        .spawn_bundle(SceneBundle {
+            scene: game_assets.level_0.clone(),
+            transform: Transform::from_xyz(0.0, 0.0, 0.0),
             ..default()
         })
-        .insert(Name::new("Ground"));
+        .insert(Name::new("Level"));
 
     // Spawn Tower Base
     let default_collider_color = materials.add(Color::rgba(0.3, 0.5, 0.3, 0.3).into());

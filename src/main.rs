@@ -36,7 +36,7 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
-        // Inspector Plugin
+        // Editor Plugin
         .add_plugin(EditorPlugin)
         // Mod Picking
         .add_plugins(DefaultPickingPlugins)
