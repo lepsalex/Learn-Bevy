@@ -1,6 +1,7 @@
 use crate::*;
 
 use bevy::prelude::*;
+use bevy::gltf::Gltf;
 use bevy_mod_picking::Selection;
 
 #[derive(Reflect, Component, Default)]
@@ -19,6 +20,12 @@ impl Plugin for TowerPlugin {
             .add_system(tower_shooting);
     }
 }
+
+// fn bind_tower_base_gtfl( mut commands: Commands, assets_gltf: Res<Assets<Scene>>) {
+//     if let Some(gltf) = assets_gltf.get(&assets_gltf) {
+
+//     }
+// }
 
 fn build_tower(
     mut commands: Commands,

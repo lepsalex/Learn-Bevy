@@ -8,6 +8,7 @@ pub use crate::tower::*;
 use bevy::{pbr::NotShadowCaster, prelude::*};
 use bevy_mod_picking::{Highlighting, PickableBundle};
 use bevy_rapier3d::prelude::RapierConfiguration;
+use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
 pub fn spawn_level(
     mut commands: Commands,
@@ -19,12 +20,18 @@ pub fn spawn_level(
     // Set Gravity
     rapier_config.gravity = Vec3::ZERO;
 
-    // Spawn Ground
+    // Spawn Level
     commands
-        .spawn_bundle(SceneBundle {
-            scene: game_assets.level_0.clone(),
-            transform: Transform::from_xyz(0.0, 0.0, 0.0),
-            ..default()
+        .spawn_bundle(HookedSceneBundle {
+            scene: SceneBundle {
+                scene: game_assets.level_0.clone(),
+                transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                ..default()
+            },
+            hook: SceneHook::new(|entity, cmds| {
+                // TODO: wip - https://github.com/nicopap/bevy-scene-hook
+                entity.get::<Name>().map(|n| info!("Entity with Name in SceneBundle: {}", n));
+            }),
         })
         .insert(Name::new("Level"));
 

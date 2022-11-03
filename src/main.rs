@@ -21,6 +21,7 @@ use bevy_rapier3d::{
     prelude::{NoUserData, RapierPhysicsPlugin},
     render::{DebugRenderMode, RapierDebugRenderPlugin},
 };
+use bevy_scene_hook::{HookPlugin};
 
 pub const WIDTH: f32 = 1280.0;
 pub const HEIGHT: f32 = 720.0;
@@ -46,6 +47,8 @@ fn main() {
             mode: DebugRenderMode::COLLIDER_SHAPES,
             ..default()
         })
+        // Scene Hooks
+        .add_plugin(HookPlugin)
         // Our Plugins
         .add_plugin(GamePlugin)
         .add_plugin(CameraPlugin)
