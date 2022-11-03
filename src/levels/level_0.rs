@@ -9,10 +9,7 @@ use bevy::{pbr::NotShadowCaster, prelude::*};
 use bevy_mod_picking::{Highlighting, PickableBundle};
 use bevy_rapier3d::prelude::RapierConfiguration;
 
-pub const WIDTH: f32 = 1280.0;
-pub const HEIGHT: f32 = 720.0;
-
-pub fn spawn_level_0(
+pub fn spawn_level(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,

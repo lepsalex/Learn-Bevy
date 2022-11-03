@@ -15,7 +15,6 @@ pub use target::*;
 pub use tower::*;
 
 use bevy::{prelude::*, utils::FloatOrd};
-// use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_editor_pls::prelude::*;
 use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_rapier3d::{
@@ -54,6 +53,6 @@ fn main() {
         .add_plugin(TargetPlugin)
         .add_plugin(BulletPlugin)
         // Level Systems
-        .add_startup_system(levels::level_0::spawn_level_0)
+        .add_startup_system(levels::level_0::spawn_level)
         .run();
 }
