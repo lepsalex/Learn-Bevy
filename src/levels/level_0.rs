@@ -64,7 +64,7 @@ pub fn spawn_level(
     commands
         .spawn_bundle(DirectionalLightBundle {
             directional_light: DirectionalLight {
-                illuminance: 10000.0,
+                illuminance: 20000.0,
                 // Configure the projection to better fit the scene
                 shadow_projection: OrthographicProjection {
                     left: -HALF_SIZE,
