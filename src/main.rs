@@ -1,6 +1,6 @@
 mod camera;
 mod game;
-mod levels;
+mod level;
 mod physics;
 mod projectile;
 mod target;
@@ -8,7 +8,7 @@ mod tower;
 
 pub use camera::*;
 pub use game::*;
-pub use levels::*;
+pub use level::*;
 pub use physics::*;
 pub use projectile::*;
 pub use target::*;
@@ -22,7 +22,7 @@ use bevy::{
 use bevy_editor_pls::prelude::*;
 use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_rapier3d::{
-    prelude::{NoUserData, RapierPhysicsPlugin},
+    prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
     render::{DebugRenderMode, RapierDebugRenderPlugin},
 };
 use bevy_scene_hook::HookPlugin;
@@ -41,6 +41,10 @@ fn main() {
             ..default()
         })
         .insert_resource(Msaa { samples: 4 })
+        .insert_resource(RapierConfiguration {
+            gravity: Vec3::ZERO,
+            ..default()
+        })
         .add_plugins(DefaultPlugins)
         // Editor Plugin
         .add_plugin(EditorPlugin)
@@ -56,14 +60,66 @@ fn main() {
         .add_plugin(HookPlugin)
         // Our Plugins
         .add_plugin(GamePlugin)
+        .add_plugin(LevelPlugin)
         .add_plugin(CameraPlugin)
         .add_plugin(TowerPlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
-        // Level Systems
-        .add_startup_system(levels::level_0::spawn_level)
+        // Spawn Level on Start
+        .add_startup_system(spawn_level)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .run();
+}
+
+fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
+    // Spawn Main Light
+    const HALF_SIZE: f32 = 10.0;
+    commands
+        .spawn_bundle(DirectionalLightBundle {
+            directional_light: DirectionalLight {
+                illuminance: 20000.0,
+                // Configure the projection to better fit the scene
+                shadow_projection: OrthographicProjection {
+                    left: -HALF_SIZE,
+                    right: HALF_SIZE,
+                    bottom: -HALF_SIZE,
+                    top: HALF_SIZE,
+                    near: -10.0 * HALF_SIZE,
+                    far: 10.0 * HALF_SIZE,
+                    ..default()
+                },
+                shadows_enabled: true,
+                ..default()
+            },
+            transform: Transform {
+                translation: Vec3::new(0.0, 2.0, 0.0),
+                rotation: Quat::from_rotation_x(-std::f32::consts::FRAC_PI_4),
+                ..default()
+            },
+            ..default()
+        })
+        .insert(Name::new("Light"));
+
+    // Spawn Enemies (will spawn 3)
+    for n in 1..4 {
+        let x_pos = -3.0 * n as f32;
+
+        commands
+            .spawn_bundle(SpatialBundle {
+                transform: Transform::from_xyz(x_pos, 0.5, 0.5),
+                ..default()
+            })
+            .insert(Target { speed: 0.6 })
+            .insert(Health { value: 3 })
+            .insert_bundle(PhysicsBundle::moving_entity_sphere(0.6))
+            .insert(Name::new("Target"))
+            .with_children(|commands| {
+                commands.spawn_bundle(SceneBundle {
+                    scene: game_assets.ufo_red_scene.clone(),
+                    ..default()
+                });
+            });
+    }
 }

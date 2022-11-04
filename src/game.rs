@@ -1,6 +1,19 @@
 use bevy::prelude::*;
 use bevy_mod_picking::Selection;
 
+pub struct GamePlugin;
+
+impl Plugin for GamePlugin {
+    fn build(&self, app: &mut App) {
+        app.register_type::<Lifetime>()
+            .register_type::<Health>()
+            .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
+            .add_system(selection_debug_logging)
+            .add_system(entity_despawn)
+            .add_system(death);
+    }
+}
+
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
 pub struct Lifetime {
@@ -19,19 +32,6 @@ pub struct GameAssets {
     pub tower_scene: Handle<Scene>,
     pub cannon_ball_scene: Handle<Scene>,
     pub ufo_red_scene: Handle<Scene>,
-}
-
-pub struct GamePlugin;
-
-impl Plugin for GamePlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<Lifetime>()
-            .register_type::<Health>()
-            .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
-            .add_system(selection_debug_logging)
-            .add_system(entity_despawn)
-            .add_system(death);
-    }
 }
 
 fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
