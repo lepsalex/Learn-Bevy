@@ -1,7 +1,7 @@
-pub use crate::projectile::*;
 pub use crate::camera::*;
 pub use crate::game::*;
 pub use crate::physics::*;
+pub use crate::projectile::*;
 pub use crate::target::*;
 pub use crate::tower::*;
 
@@ -60,34 +60,49 @@ pub fn spawn_level(
         .insert(Name::new("Level"));
 
     // Spawn Main Light
+    const HALF_SIZE: f32 = 10.0;
     commands
-        .spawn_bundle(PointLightBundle {
-            point_light: PointLight {
-                intensity: 1500.0,
+        .spawn_bundle(DirectionalLightBundle {
+            directional_light: DirectionalLight {
+                illuminance: 10000.0,
+                // Configure the projection to better fit the scene
+                shadow_projection: OrthographicProjection {
+                    left: -HALF_SIZE,
+                    right: HALF_SIZE,
+                    bottom: -HALF_SIZE,
+                    top: HALF_SIZE,
+                    near: -10.0 * HALF_SIZE,
+                    far: 10.0 * HALF_SIZE,
+                    ..default()
+                },
                 shadows_enabled: true,
                 ..default()
             },
-            transform: Transform::from_xyz(4.0, 8.0, 4.0),
+            transform: Transform {
+                translation: Vec3::new(0.0, 2.0, 0.0),
+                rotation: Quat::from_rotation_x(-std::f32::consts::FRAC_PI_4),
+                ..default()
+            },
             ..default()
         })
         .insert(Name::new("Light"));
 
     // Spawn Enemies (will spawn 3)
     for n in 1..4 {
-        let x_pos = -2.0 * n as f32;
+        let x_pos = -3.0 * n as f32;
 
         commands
             .spawn_bundle(SpatialBundle {
-                transform: Transform::from_xyz(x_pos, 0.4, 2.5),
+                transform: Transform::from_xyz(x_pos, 0.5, 0.5),
                 ..default()
             })
-            .insert(Target { speed: 0.3 })
+            .insert(Target { speed: 0.6 })
             .insert(Health { value: 3 })
-            .insert_bundle(PhysicsBundle::moving_entity_sphere(0.4))
+            .insert_bundle(PhysicsBundle::moving_entity_sphere(0.6))
             .insert(Name::new("Target"))
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
-                    scene: game_assets.target_scene.clone(),
+                    scene: game_assets.ufo_red_scene.clone(),
                     ..default()
                 });
             });
