@@ -31,7 +31,15 @@ fn build_tower(
             if selection.selected() {
                 commands.entity(entity).despawn_recursive();
                 // TODO: Improve spawn location (the collider needs to be right but currently isn't ...)
-                spawn_tower(&mut commands, &assets, Vec3 { x: transform.translation.x, y: 1.0, z: transform.translation.z });
+                spawn_tower(
+                    &mut commands,
+                    &assets,
+                    Vec3 {
+                        x: transform.translation.x,
+                        y: 1.0,
+                        z: transform.translation.z,
+                    },
+                );
             }
         }
     }

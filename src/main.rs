@@ -1,18 +1,17 @@
-mod camera;
 mod game;
-mod level;
 mod physics;
 mod projectile;
 mod target;
 mod tower;
+mod world;
 
-pub use camera::*;
 pub use game::*;
 pub use level::*;
 pub use physics::*;
 pub use projectile::*;
 pub use target::*;
 pub use tower::*;
+pub use world::*;
 
 use bevy::{
     diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
@@ -60,8 +59,7 @@ fn main() {
         .add_plugin(HookPlugin)
         // Our Plugins
         .add_plugin(GamePlugin)
-        .add_plugin(LevelPlugin)
-        .add_plugin(CameraPlugin)
+        .add_plugins(DefaultWorldPlugins)
         .add_plugin(TowerPlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
@@ -74,34 +72,6 @@ fn main() {
 }
 
 fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
-    // Spawn Main Light
-    const HALF_SIZE: f32 = 10.0;
-    commands
-        .spawn_bundle(DirectionalLightBundle {
-            directional_light: DirectionalLight {
-                illuminance: 20000.0,
-                // Configure the projection to better fit the scene
-                shadow_projection: OrthographicProjection {
-                    left: -HALF_SIZE,
-                    right: HALF_SIZE,
-                    bottom: -HALF_SIZE,
-                    top: HALF_SIZE,
-                    near: -10.0 * HALF_SIZE,
-                    far: 10.0 * HALF_SIZE,
-                    ..default()
-                },
-                shadows_enabled: true,
-                ..default()
-            },
-            transform: Transform {
-                translation: Vec3::new(0.0, 2.0, 0.0),
-                rotation: Quat::from_rotation_x(-std::f32::consts::FRAC_PI_4),
-                ..default()
-            },
-            ..default()
-        })
-        .insert(Name::new("Light"));
-
     // Spawn Enemies (will spawn 3)
     for n in 1..4 {
         let x_pos = -3.0 * n as f32;
