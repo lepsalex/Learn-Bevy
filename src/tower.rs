@@ -1,7 +1,6 @@
 use crate::*;
 
 use bevy::prelude::*;
-use bevy::gltf::Gltf;
 use bevy_mod_picking::Selection;
 
 #[derive(Reflect, Component, Default)]
@@ -21,12 +20,6 @@ impl Plugin for TowerPlugin {
     }
 }
 
-// fn bind_tower_base_gtfl( mut commands: Commands, assets_gltf: Res<Assets<Scene>>) {
-//     if let Some(gltf) = assets_gltf.get(&assets_gltf) {
-
-//     }
-// }
-
 fn build_tower(
     mut commands: Commands,
     selection: Query<(Entity, &Selection, &Transform)>,
@@ -37,25 +30,26 @@ fn build_tower(
         for (entity, selection, transform) in &selection {
             if selection.selected() {
                 commands.entity(entity).despawn_recursive();
-                spawn_tomato_tower(&mut commands, &assets, transform.translation);
+                // TODO: Improve spawn location (the collider needs to be right but currently isn't ...)
+                spawn_tower(&mut commands, &assets, Vec3 { x: transform.translation.x, y: 1.0, z: transform.translation.z });
             }
         }
     }
 }
 
-fn spawn_tomato_tower(commands: &mut Commands, assets: &GameAssets, position: Vec3) -> Entity {
+fn spawn_tower(commands: &mut Commands, assets: &GameAssets, position: Vec3) -> Entity {
     commands
         .spawn_bundle(SpatialBundle::from_transform(Transform::from_translation(
             position,
         )))
-        .insert(Name::new("Tomato_Tower"))
+        .insert(Name::new("Tower"))
         .insert(Tower {
             shooting_timer: Timer::from_seconds(0.5, true),
             bullet_offset: Vec3::new(0.0, 0.6, 0.0),
         })
         .with_children(|commands| {
             commands.spawn_bundle(SceneBundle {
-                scene: assets.tomato_tower_scene.clone(),
+                scene: assets.tower_scene.clone(),
                 transform: Transform::from_xyz(0.0, -0.8, 0.0),
                 ..default()
             });

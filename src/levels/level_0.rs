@@ -20,6 +20,11 @@ pub fn spawn_level(
     // Set Gravity
     rapier_config.gravity = Vec3::ZERO;
 
+    // Spawn Tower Base
+    let default_collider_color = materials.add(Color::rgba(0.3, 0.5, 0.3, 0.3).into());
+    let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
+    let collider_mesh = meshes.add(shape::Capsule::default().into());
+
     // Spawn Level
     commands
         .spawn_bundle(HookedSceneBundle {
@@ -28,39 +33,31 @@ pub fn spawn_level(
                 transform: Transform::from_xyz(0.0, 0.0, 0.0),
                 ..default()
             },
-            hook: SceneHook::new(|entity, cmds| {
-                // TODO: wip - https://github.com/nicopap/bevy-scene-hook
-                entity.get::<Name>().map(|n| info!("Entity with Name in SceneBundle: {}", n));
+            hook: SceneHook::new(move |entity, cmds| {
+                entity.get::<Name>().map(|name| {
+                    /*
+                    Attach required components for
+                    tower base within the Blender scene
+
+                    TODO: Consider refactoring this to a module?
+                    */
+                    if name.starts_with("base") {
+                        cmds.insert(Name::new("Tower_Base"))
+                            .insert(collider_mesh.clone())
+                            .insert(Highlighting {
+                                initial: default_collider_color.clone(),
+                                hovered: Some(selected_collider_color.clone()),
+                                pressed: Some(selected_collider_color.clone()),
+                                selected: Some(selected_collider_color.clone()),
+                            })
+                            .insert(default_collider_color.clone())
+                            .insert(NotShadowCaster)
+                            .insert_bundle(PickableBundle::default());
+                    }
+                });
             }),
         })
         .insert(Name::new("Level"));
-
-    // Spawn Tower Base
-    let default_collider_color = materials.add(Color::rgba(0.3, 0.5, 0.3, 0.3).into());
-    let selected_collider_color = materials.add(Color::rgba(0.3, 0.9, 0.3, 0.9).into());
-
-    commands
-        .spawn_bundle(SpatialBundle::from_transform(Transform::from_xyz(
-            0.0, 0.8, 0.0,
-        )))
-        .insert(Name::new("Tower_Base"))
-        .insert(meshes.add(shape::Capsule::default().into()))
-        .insert(Highlighting {
-            initial: default_collider_color.clone(),
-            hovered: Some(selected_collider_color.clone()),
-            pressed: Some(selected_collider_color.clone()),
-            selected: Some(selected_collider_color.clone()),
-        })
-        .insert(default_collider_color)
-        .insert(NotShadowCaster)
-        .insert_bundle(PickableBundle::default())
-        .with_children(|commands| {
-            commands.spawn_bundle(SceneBundle {
-                scene: game_assets.tower_base_scene.clone(),
-                transform: Transform::from_xyz(0.0, -0.8, 0.0),
-                ..default()
-            });
-        });
 
     // Spawn Main Light
     commands

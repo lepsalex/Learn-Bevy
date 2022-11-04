@@ -16,7 +16,7 @@ pub struct Health {
 pub struct GameAssets {
     pub level_0: Handle<Scene>,
     pub tower_base_scene: Handle<Scene>,
-    pub tomato_tower_scene: Handle<Scene>,
+    pub tower_scene: Handle<Scene>,
     pub tomato_scene: Handle<Scene>,
     pub target_scene: Handle<Scene>,
 }
@@ -38,7 +38,7 @@ fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
     commands.insert_resource(GameAssets {
         level_0: assets.load("Level_0.glb#Scene0"),
         tower_base_scene: assets.load("TowerBase.glb#Scene0"),
-        tomato_tower_scene: assets.load("TomatoTower.glb#Scene0"),
+        tower_scene: assets.load("Tower.glb#Scene0"),
         tomato_scene: assets.load("Tomato.glb#Scene0"),
         target_scene: assets.load("Target.glb#Scene0"),
     });

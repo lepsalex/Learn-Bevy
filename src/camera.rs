@@ -21,7 +21,7 @@ const MAIN_CAMERA_ROTATION_SPEED: f32 = 1.0;
 fn spawn_main_camera(mut commands: Commands) {
     commands
         .spawn_bundle(Camera3dBundle {
-            transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_xyz(-4.0, 5.0, 4.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         })
         .insert_bundle(PickingCameraBundle::default())
