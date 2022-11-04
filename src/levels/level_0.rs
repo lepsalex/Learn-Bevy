@@ -1,4 +1,4 @@
-pub use crate::bullet::*;
+pub use crate::projectile::*;
 pub use crate::camera::*;
 pub use crate::game::*;
 pub use crate::physics::*;

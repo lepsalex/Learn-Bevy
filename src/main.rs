@@ -1,4 +1,4 @@
-mod bullet;
+mod projectile;
 mod camera;
 mod game;
 mod levels;
@@ -6,7 +6,7 @@ mod physics;
 mod target;
 mod tower;
 
-pub use bullet::*;
+pub use projectile::*;
 pub use camera::*;
 pub use game::*;
 pub use levels::*;
@@ -54,7 +54,7 @@ fn main() {
         .add_plugin(CameraPlugin)
         .add_plugin(TowerPlugin)
         .add_plugin(TargetPlugin)
-        .add_plugin(BulletPlugin)
+        .add_plugin(ProjectilePlugin)
         // Level Systems
         .add_startup_system(levels::level_0::spawn_level)
         .run();

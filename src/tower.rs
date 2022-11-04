@@ -90,14 +90,14 @@ fn tower_shooting(
                         .insert(Lifetime {
                             timer: Timer::from_seconds(1000.0, false),
                         })
-                        .insert(Bullet {
+                        .insert(Projectile {
                             direction: bullet_direction,
                             speed: 2.5,
                         })
                         .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
                         .with_children(|commands| {
                             commands.spawn_bundle(SceneBundle {
-                                scene: game_assets.tomato_scene.clone(),
+                                scene: game_assets.cannon_ball_scene.clone(),
                                 ..default()
                             });
                         });
