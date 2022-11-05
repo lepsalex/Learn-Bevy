@@ -34,5 +34,5 @@ fn spawn_lighting(mut commands: Commands) {
             },
             ..default()
         })
-        .insert(Name::new("Light"));
+        .insert(Name::new("Main Light"));
 }

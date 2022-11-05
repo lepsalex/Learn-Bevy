@@ -33,7 +33,7 @@ pub const HEIGHT: f32 = 720.0;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::hsl(42.0, 0.42, 0.61)))
+        .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
         .insert_resource(WindowDescriptor {
             width: WIDTH,
             height: HEIGHT,

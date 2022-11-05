@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{core_pipeline::clear_color::ClearColorConfig, prelude::*};
 use bevy_mod_picking::PickingCameraBundle;
 
 #[derive(Reflect, Component, Default)]
@@ -10,8 +10,8 @@ pub struct CameraPlugin;
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<GameCamera>()
-        .add_startup_system(spawn_main_camera)
-        .add_system(camera_controls);
+            .add_startup_system(spawn_main_camera)
+            .add_system(camera_controls);
     }
 }
 
@@ -21,11 +21,15 @@ const MAIN_CAMERA_ROTATION_SPEED: f32 = 1.0;
 fn spawn_main_camera(mut commands: Commands) {
     commands
         .spawn_bundle(Camera3dBundle {
-            transform: Transform::from_xyz(5.0, 8.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            camera_3d: Camera3d {
+                clear_color: ClearColorConfig::Custom(Color::hsl(42.0, 0.42, 0.61)),
+                ..default()
+            },
+            transform: Transform::from_xyz(4.0, 7.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
             ..default()
         })
         .insert_bundle(PickingCameraBundle::default())
-        .insert(GameCamera{})
+        .insert(GameCamera {})
         .insert(Name::new("Main Camera"));
 }
 
@@ -36,7 +40,7 @@ fn camera_controls(
 ) {
     // WARNING: This will panic if we ever spawn more than one camera!
     let mut camera = camera_query.single_mut();
-    
+
     // Get camera forward vector (Y zero'd to account for down angle)
     let mut forward = camera.forward();
     forward.y = 0.0;
