@@ -3,13 +3,6 @@ use crate::*;
 use bevy::prelude::*;
 use bevy_mod_picking::Selection;
 
-#[derive(Reflect, Component, Default)]
-#[reflect(Component)]
-pub struct Tower {
-    pub shooting_timer: Timer,
-    pub bullet_offset: Vec3,
-}
-
 pub struct TowerPlugin;
 
 impl Plugin for TowerPlugin {
@@ -18,6 +11,13 @@ impl Plugin for TowerPlugin {
             .add_system(build_tower)
             .add_system(tower_shooting);
     }
+}
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct Tower {
+    pub shooting_timer: Timer,
+    pub bullet_offset: Vec3,
 }
 
 fn build_tower(
@@ -29,14 +29,15 @@ fn build_tower(
     if keyboard.just_pressed(KeyCode::Space) {
         for (entity, selection, transform) in &selection {
             if selection.selected() {
-                commands.entity(entity).despawn_recursive();
-                // TODO: Improve spawn location (the collider needs to be right but currently isn't ...)
+                commands
+                    .entity(entity)
+                    .remove_bundle::<TowerBaseLocationBundle>();
                 spawn_tower(
                     &mut commands,
                     &assets,
                     Vec3 {
                         x: transform.translation.x,
-                        y: 1.0,
+                        y: transform.translation.y + 0.9,
                         z: transform.translation.z,
                     },
                 );

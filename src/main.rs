@@ -3,6 +3,7 @@ mod physics;
 mod projectile;
 mod target;
 mod tower;
+mod tower_base;
 mod world;
 
 pub use game::*;
@@ -11,6 +12,7 @@ pub use physics::*;
 pub use projectile::*;
 pub use target::*;
 pub use tower::*;
+pub use tower_base::*;
 pub use world::*;
 
 use bevy::{
@@ -61,6 +63,7 @@ fn main() {
         .add_plugin(GamePlugin)
         .add_plugins(DefaultWorldPlugins)
         .add_plugin(TowerPlugin)
+        .add_plugin(TowerBasePlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
         // Spawn Level on Start
