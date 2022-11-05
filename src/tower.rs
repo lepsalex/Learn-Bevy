@@ -97,11 +97,12 @@ fn tower_shooting(
                         })
                         .insert(Name::new("Bullet"))
                         .insert(Lifetime {
-                            timer: Timer::from_seconds(1000.0, false),
+                            timer: Timer::from_seconds(10.0, false),
                         })
                         .insert(Projectile {
                             direction: bullet_direction,
                             speed: 2.5,
+                            damage: 1
                         })
                         .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
                         .with_children(|commands| {

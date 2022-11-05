@@ -8,6 +8,7 @@ use crate::*;
 pub struct Projectile {
     pub direction: Vec3,
     pub speed: f32,
+    pub damage: i32,
 }
 
 pub struct ProjectilePlugin;
@@ -28,15 +29,14 @@ fn move_projectiles(mut projectiles: Query<(&Projectile, &mut Transform)>, time:
 
 fn projectile_collision_detection(
     mut commands: Commands,
-    projectile_query: Query<Entity, With<Projectile>>,
+    projectile_query: Query<(Entity, &Projectile)>,
     mut colliding_entities_query: Query<(&mut Health, &CollidingEntities), With<Target>>,
 ) {
     for (mut health, colliding_entities) in colliding_entities_query.iter_mut() {
-        for projectile_entity in projectile_query.iter() {
+        for (projectile_entity, projectile) in projectile_query.iter() {
             if colliding_entities.contains(projectile_entity) {
-                commands.entity(projectile_entity).despawn_recursive();
-                // TODO: get projectile damage from projectile?
-                health.value -= 1;
+                commands.entity(projectile_entity).insert(Despawn);
+                health.value -= projectile.damage;
             }
         }
     }

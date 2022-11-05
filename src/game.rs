@@ -9,8 +9,9 @@ impl Plugin for GamePlugin {
             .register_type::<Health>()
             .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
             .add_system(selection_debug_logging)
-            .add_system(entity_despawn)
-            .add_system(death);
+            .add_system(lifetime)
+            .add_system(death)
+            .add_system_to_stage(CoreStage::PostUpdate, despawn);
     }
 }
 
@@ -25,6 +26,10 @@ pub struct Lifetime {
 pub struct Health {
     pub value: i32,
 }
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct Despawn;
 
 pub struct GameAssets {
     pub level_0: Handle<Scene>,
@@ -52,7 +57,15 @@ fn selection_debug_logging(selection: Query<(&Name, &Selection)>) {
     }
 }
 
-fn entity_despawn(
+fn death(mut commands: Commands, targets: Query<(Entity, &Health)>) {
+    for (ent, health) in &targets {
+        if health.value <= 0 {
+            commands.entity(ent).insert(Despawn);
+        }
+    }
+}
+
+fn lifetime(
     mut commands: Commands,
     mut lifetimes: Query<(Entity, &mut Lifetime)>,
     time: Res<Time>,
@@ -60,15 +73,13 @@ fn entity_despawn(
     for (entity, mut lifetime) in &mut lifetimes {
         lifetime.timer.tick(time.delta());
         if lifetime.timer.just_finished() {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).insert(Despawn);
         }
     }
 }
 
-fn death(mut commands: Commands, targets: Query<(Entity, &Health)>) {
-    for (ent, health) in &targets {
-        if health.value <= 0 {
-            commands.entity(ent).despawn_recursive();
-        }
+fn despawn(mut commands: Commands, entities: Query<Entity, With<Despawn>>) {
+    for entity in entities.iter() {
+        commands.entity(entity).despawn_recursive();
     }
 }
