@@ -26,7 +26,26 @@ pub struct Waypoint {
     pub spawn_id: u32,
 }
 
-fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
+fn spawn_level(
+    mut commands: Commands,
+    game_assets: Res<GameAssets>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    // // TODO: Make this tile
+    // let blg_material_handle = materials.add(StandardMaterial {
+    //     base_color_texture: Some(game_assets.bkg_tile.clone()),
+    //     alpha_mode: AlphaMode::Blend,
+    //     unlit: true,
+    //     ..default()
+    // });
+
+    // commands.spawn_bundle(PbrBundle {
+    //     mesh: meshes.add(Mesh::from(shape::Plane { size: 10.0 })),
+    //     material: blg_material_handle,
+    //     ..default()
+    // });
+
     // Spawn Level
     commands
         .spawn_bundle(HookedSceneBundle {

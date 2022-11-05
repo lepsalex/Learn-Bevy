@@ -22,7 +22,7 @@ fn spawn_main_camera(mut commands: Commands) {
     commands
         .spawn_bundle(Camera3dBundle {
             camera_3d: Camera3d {
-                clear_color: ClearColorConfig::Custom(Color::hsl(42.0, 0.42, 0.61)),
+                clear_color: ClearColorConfig::Custom(Color::hsl(209.0, 0.45, 0.22)),
                 ..default()
             },
             transform: Transform::from_xyz(4.0, 7.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),

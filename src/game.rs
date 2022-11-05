@@ -32,6 +32,7 @@ pub struct GameAssets {
     pub cannon_ball_scene: Handle<Scene>,
     pub ufo_red_scene: Handle<Scene>,
     pub tower_base_mesh: Handle<Mesh>,
+    pub bkg_tile: Handle<Image>,
 }
 
 fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
@@ -41,6 +42,7 @@ fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
         cannon_ball_scene: assets.load("CannonBall.glb#Scene0"),
         ufo_red_scene: assets.load("UfoRed.glb#Scene0"),
         tower_base_mesh: assets.load("TowerBase.glb#Mesh0/Primitive0"),
+        bkg_tile: assets.load("T_BkgTile.png"),
     });
 }
 
