@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
-#[derive(Bundle)]
+#[derive(Default, Bundle)]
 pub struct PhysicsBundle {
     flags: ActiveEvents,
     active_collision_types: ActiveCollisionTypes,

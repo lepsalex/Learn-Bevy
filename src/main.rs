@@ -1,15 +1,19 @@
+mod enemy;
 mod game;
 mod physics;
 mod projectile;
+mod spawner;
 mod target;
 mod tower;
 mod tower_base;
 mod world;
 
+pub use enemy::*;
 pub use game::*;
 pub use level::*;
 pub use physics::*;
 pub use projectile::*;
+pub use spawner::*;
 pub use target::*;
 pub use tower::*;
 pub use tower_base::*;
@@ -66,33 +70,9 @@ fn main() {
         .add_plugin(TowerBasePlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
-        // Spawn Level on Start
-        .add_startup_system(spawn_level)
+        .add_plugin(SpawnerPlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .run();
-}
-
-fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
-    // Spawn Enemies (will spawn 3)
-    for n in 1..4 {
-        let x_pos = -3.0 * n as f32;
-
-        commands
-            .spawn_bundle(SpatialBundle {
-                transform: Transform::from_xyz(x_pos, 0.5, 0.5),
-                ..default()
-            })
-            .insert(Target { speed: 0.6 })
-            .insert(Health { value: 3 })
-            .insert_bundle(PhysicsBundle::moving_entity_sphere(0.6))
-            .insert(Name::new("Target"))
-            .with_children(|commands| {
-                commands.spawn_bundle(SceneBundle {
-                    scene: game_assets.ufo_red_scene.clone(),
-                    ..default()
-                });
-            });
-    }
 }
