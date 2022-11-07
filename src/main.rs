@@ -1,5 +1,6 @@
 mod enemy;
 mod game;
+mod navigation;
 mod physics;
 mod projectile;
 mod spawner;
@@ -11,6 +12,7 @@ mod world;
 pub use enemy::*;
 pub use game::*;
 pub use level::*;
+pub use navigation::*;
 pub use physics::*;
 pub use projectile::*;
 pub use spawner::*;
@@ -71,6 +73,7 @@ fn main() {
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
         .add_plugin(SpawnerPlugin)
+        .add_plugin(NavigationPlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())

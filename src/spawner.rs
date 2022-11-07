@@ -40,7 +40,6 @@ fn spawner(
     time: Res<Time>,
 ) {
     for (entity, mut spawn_point, sp_transform) in &mut spawn_points {
-        
         // if spawn point is maxed, mark and exit early
         if spawn_point.num_spawned >= spawn_point.max_spawns {
             commands.entity(entity).insert(SpawnPointDisabled);
@@ -63,8 +62,8 @@ fn spawner(
                         })
                         .insert(Name::new("Enemy (basic)"))
                         .insert_bundle(EnemyBundleTemplate::new(
-                            Target { speed: 0.6 },
-                            Health { value: 3 },
+                            3,
+                            0.6,
                             PhysicsBundle::moving_entity_sphere(0.6),
                         ))
                         .with_children(|commands| {

@@ -6,6 +6,7 @@ use crate::*;
 pub struct EnemyBundleTemplate {
     target: Target,
     health: Health,
+    nav_agent: NavAgent,
     #[bundle]
     #[reflect(ignore)]
     physics_bundle: PhysicsBundle,
@@ -13,13 +14,17 @@ pub struct EnemyBundleTemplate {
 
 impl EnemyBundleTemplate {
     pub fn new(
-        target: Target,
-        health: Health,
+        health: i32,
+        speed: f32,
         physics_bundle: PhysicsBundle,
     ) -> Self {
         Self {
-            target,
-            health,
+            target: Target,
+            health: Health { value: health },
+            nav_agent: NavAgent {
+                speed: speed,
+                delay_timer: Timer::from_seconds(0.5, false),
+            },
             physics_bundle,
         }
     }
