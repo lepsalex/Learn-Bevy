@@ -15,15 +15,20 @@ pub struct EnemyBundleTemplate {
 impl EnemyBundleTemplate {
     pub fn new(
         health: i32,
-        speed: f32,
+        move_speed: f32,
+        turn_speed: f32,
+        route: Vec<Vec3>,
         physics_bundle: PhysicsBundle,
     ) -> Self {
         Self {
             target: Target,
             health: Health { value: health },
             nav_agent: NavAgent {
-                speed: speed,
+                move_speed,
+                turn_speed,
                 delay_timer: Timer::from_seconds(0.5, false),
+                route,
+                ..default()
             },
             physics_bundle,
         }

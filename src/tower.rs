@@ -102,7 +102,7 @@ fn tower_shooting(
                         .insert(Projectile {
                             direction: bullet_direction,
                             speed: 2.5,
-                            damage: 1
+                            damage: 1,
                         })
                         .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
                         .with_children(|commands| {
