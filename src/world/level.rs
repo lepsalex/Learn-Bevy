@@ -1,22 +1,14 @@
 use bevy::prelude::*;
 use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
-use crate::{GameAssets, SpawnEntityMapping, SpawnPoint, TowerBaseLocation};
+use crate::{GameAssets, SpawnEntityMapping, SpawnPoint, TowerBaseLocation, Waypoint};
 
 pub struct LevelPlugin;
 
 impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Waypoint>()
-            .add_startup_system(spawn_level);
+        app.add_startup_system(spawn_level);
     }
-}
-
-#[derive(Reflect, Component, Default)]
-#[reflect(Component)]
-pub struct Waypoint {
-    pub id: u32,
-    pub spawn_id: u32,
 }
 
 // Names matching node name in Blender
