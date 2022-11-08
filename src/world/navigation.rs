@@ -1,6 +1,6 @@
 use bevy::{prelude::*, utils::HashMap};
 
-use crate::SpawnPoint;
+use crate::spawner::SpawnPoint;
 
 pub struct NavigationPlugin;
 

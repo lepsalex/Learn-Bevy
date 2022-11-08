@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::*;
+use crate::{
+    navigation::{NavRoute, WAYPOINT_OFFSET},
+    *,
+};
 
 pub struct SpawnerPlugin;
 

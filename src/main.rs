@@ -1,9 +1,7 @@
 mod enemy;
 mod game;
-mod navigation;
 mod physics;
 mod projectile;
-mod spawner;
 mod target;
 mod tower;
 mod tower_base;
@@ -12,10 +10,8 @@ mod world;
 pub use enemy::*;
 pub use game::*;
 pub use level::*;
-pub use navigation::*;
 pub use physics::*;
 pub use projectile::*;
-pub use spawner::*;
 pub use target::*;
 pub use tower::*;
 pub use tower_base::*;
@@ -72,8 +68,6 @@ fn main() {
         .add_plugin(TowerBasePlugin)
         .add_plugin(TargetPlugin)
         .add_plugin(ProjectilePlugin)
-        .add_plugin(SpawnerPlugin)
-        .add_plugin(NavigationPlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())

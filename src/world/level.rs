@@ -1,7 +1,10 @@
 use bevy::prelude::*;
 use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
-use crate::{get_spawn_point_for_enemy_type, EnemyType, GameAssets, TowerBaseLocation, Waypoint};
+use crate::{
+    navigation::Waypoint, spawner::get_spawn_point_for_enemy_type, EnemyType, GameAssets,
+    TowerBaseLocation,
+};
 
 pub struct LevelPlugin;
 

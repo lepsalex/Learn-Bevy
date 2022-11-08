@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::*;
+use crate::{navigation::NavAgent, *};
 
 #[derive(Default, Bundle, Reflect)]
 pub struct EnemyBundle {
