@@ -41,11 +41,11 @@ pub struct GameAssets {
 
 fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
     commands.insert_resource(GameAssets {
-        level_0: assets.load("Level_0.glb#Scene0"),
-        tower_scene: assets.load("Tower.glb#Scene0"),
-        cannon_ball_scene: assets.load("CannonBall.glb#Scene0"),
-        ufo_red_scene: assets.load("UfoRed.glb#Scene0"),
-        tower_base_mesh: assets.load("TowerBase.glb#Mesh0/Primitive0"),
+        level_0: assets.load("model/Level_0.glb#Scene0"),
+        tower_scene: assets.load("model/Tower.glb#Scene0"),
+        cannon_ball_scene: assets.load("model/CannonBall.glb#Scene0"),
+        ufo_red_scene: assets.load("model/UfoRed.glb#Scene0"),
+        tower_base_mesh: assets.load("model/TowerBase.glb#Mesh0/Primitive0"),
     });
 }
 
