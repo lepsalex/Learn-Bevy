@@ -24,7 +24,7 @@ pub struct NavAgent {
 #[derive(Component)]
 pub struct NavAgentEnabled;
 
-const DESTINATION_TOLERANCE: f32 = 0.05;
+const DESTINATION_TOLERANCE: f32 = 0.2;
 
 fn init_nav_agents(
     mut commands: Commands,
@@ -48,7 +48,9 @@ fn update_nav_agent_destination(
     for (entity, mut agent, transform) in &mut agents {
         if transform.translation.distance(agent.destination) < DESTINATION_TOLERANCE {
             match agent.route.pop() {
-                Some(destination) => agent.destination = destination,
+                Some(destination) => {
+                    agent.destination = destination
+                },
                 None => {
                     commands.entity(entity).remove::<NavAgentEnabled>();
                 }
@@ -64,7 +66,7 @@ fn move_nav_agents(
     for (agent, mut transform) in &mut agents {
         // Rotate agent towards destination at rotation speed
         let look_at_destination = transform.looking_at(agent.destination, transform.local_y());
-        let incremental_turn_weight = agent.move_speed * time.delta_seconds();
+        let incremental_turn_weight = agent.turn_speed * time.delta_seconds();
         let old_rotation = transform.rotation;
         transform.rotation =
             old_rotation.lerp(look_at_destination.rotation, incremental_turn_weight);

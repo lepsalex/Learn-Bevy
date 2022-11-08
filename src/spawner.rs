@@ -56,7 +56,8 @@ fn spawner(
 
             let mut waypoint_destinations: Vec<(&Waypoint, Vec3)> = waypoints
                 .iter()
-                .filter(|(wp, _)| wp.spawn_id == spawn_point.id)
+                .filter(|(wp, _)| {
+                    wp.spawn_id == spawn_point.id})
                 .map(|(wp, t)| (wp, t.translation() + spawn_offset))
                 .collect();
 
@@ -64,7 +65,9 @@ fn spawner(
 
             let route: Vec<Vec3> = waypoint_destinations
                 .iter()
-                .map(|(_, loc)| loc.clone())
+                .map(|(wp, loc)| {
+                    loc.clone()
+            })
                 .collect();
 
             match spawn_point.spawn_entity {
@@ -81,7 +84,7 @@ fn spawner(
                         .insert_bundle(EnemyBundleTemplate::new(
                             3,
                             0.6,
-                            0.6,
+                            2.4,
                             route,
                             PhysicsBundle::moving_entity_sphere(0.6),
                         ))
