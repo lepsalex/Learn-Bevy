@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::*;
 
 #[derive(Default, Bundle, Reflect)]
-pub struct EnemyBundleTemplate {
+pub struct EnemyBundle {
     target: Target,
     health: Health,
     nav_agent: NavAgent,
@@ -12,7 +12,7 @@ pub struct EnemyBundleTemplate {
     physics_bundle: PhysicsBundle,
 }
 
-impl EnemyBundleTemplate {
+impl EnemyBundle {
     pub fn new(
         health: i32,
         move_speed: f32,
@@ -32,5 +32,23 @@ impl EnemyBundleTemplate {
             },
             physics_bundle,
         }
+    }
+}
+
+#[derive(Reflect, Clone, Copy, Default)]
+pub enum EnemyType {
+    #[default]
+    EnemyBasic,
+}
+
+pub fn get_enemy_bundle(enemy_type: EnemyType, nav_route: &Vec<Vec3>) -> EnemyBundle {
+    match enemy_type {
+        EnemyType::EnemyBasic => EnemyBundle::new(
+            3,
+            0.6,
+            2.4,
+            nav_route.clone(),
+            PhysicsBundle::moving_entity_sphere(0.6),
+        ),
     }
 }

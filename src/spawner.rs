@@ -15,7 +15,7 @@ impl Plugin for SpawnerPlugin {
 #[reflect(Component)]
 pub struct SpawnPoint {
     pub id: u32,
-    pub spawn_entity: SpawnEntityMapping,
+    pub enemy_type: EnemyType,
     pub spawn_timer: Timer,
     pub max_spawns: u32,
     pub num_spawned: u32,
@@ -24,10 +24,14 @@ pub struct SpawnPoint {
 #[derive(Component)]
 pub struct SpawnPointDisabled;
 
-#[derive(Reflect, Clone, Copy, Default)]
-pub enum SpawnEntityMapping {
-    #[default]
-    EnemyBasic,
+pub fn get_spawn_point_for_enemy_type(id: u32, enemy_type: EnemyType) -> SpawnPoint {
+    SpawnPoint {
+        id,
+        enemy_type,
+        spawn_timer: Timer::from_seconds(3.0, true),
+        max_spawns: 3,
+        ..default()
+    }
 }
 
 fn spawner(
@@ -51,8 +55,8 @@ fn spawner(
 
         // spawn an entity at the spawn point if the timer just finished
         if spawn_point.spawn_timer.just_finished() {
-            match spawn_point.spawn_entity {
-                SpawnEntityMapping::EnemyBasic => {
+            match spawn_point.enemy_type {
+                EnemyType::EnemyBasic => {
                     commands
                         .spawn_bundle(SpatialBundle {
                             transform: Transform::from_translation(
@@ -62,13 +66,7 @@ fn spawner(
                             ..default()
                         })
                         .insert(Name::new("Enemy (basic)"))
-                        .insert_bundle(EnemyBundleTemplate::new(
-                            3,
-                            0.6,
-                            2.4,
-                            nav_route.route.clone(),
-                            PhysicsBundle::moving_entity_sphere(0.6),
-                        ))
+                        .insert_bundle(get_enemy_bundle(EnemyType::EnemyBasic, &nav_route.route))
                         .with_children(|commands| {
                             commands.spawn_bundle(SceneBundle {
                                 scene: game_assets.ufo_red_scene.clone(),

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
-use crate::{GameAssets, SpawnEntityMapping, SpawnPoint, TowerBaseLocation, Waypoint};
+use crate::{get_spawn_point_for_enemy_type, EnemyType, GameAssets, TowerBaseLocation, Waypoint};
 
 pub struct LevelPlugin;
 
@@ -37,13 +37,10 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
 
                     if name.starts_with(SPAWN_LOCATION_NAME) {
                         let data: Vec<&str> = name.split(".").collect();
-                        cmds.insert(SpawnPoint {
-                            id: data.get(1).unwrap().parse::<u32>().unwrap(),
-                            spawn_entity: SpawnEntityMapping::EnemyBasic,
-                            spawn_timer: Timer::from_seconds(3.0, true),
-                            max_spawns: 3,
-                            ..default()
-                        })
+                        cmds.insert(get_spawn_point_for_enemy_type(
+                            data.get(1).unwrap().parse::<u32>().unwrap(),
+                            EnemyType::EnemyBasic,
+                        ))
                         .insert(Name::new("SpawnPoint"));
                     }
 
