@@ -57,8 +57,8 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                     if name.starts_with(WAYPOINT_LOCATION_NAME) {
                         let data: Vec<&str> = name.split(".").collect();
                         cmds.insert(Waypoint {
-                            id: data.get(1).unwrap().parse::<u32>().unwrap(),
-                            spawn_id: data.get(2).unwrap().parse::<u32>().unwrap(),
+                            id: data.get(2).unwrap().parse::<u32>().unwrap(),
+                            spawn_id: data.get(1).unwrap().parse::<u32>().unwrap(),
                         });
                     }
                 });
