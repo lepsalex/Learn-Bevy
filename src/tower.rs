@@ -1,4 +1,10 @@
-use crate::*;
+use crate::{
+    assets::GameAssets,
+    common::{Lifetime, Target},
+    physics::PhysicsBundle,
+    projectile::Projectile,
+    *,
+};
 
 use bevy::prelude::*;
 use bevy_mod_picking::Selection;

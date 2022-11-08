@@ -1,7 +1,7 @@
-use crate::*;
-
 use bevy::{pbr::NotShadowCaster, prelude::*};
 use bevy_mod_picking::{Highlighting, PickableBundle};
+
+use crate::assets::GameAssets;
 
 pub struct TowerBasePlugin;
 

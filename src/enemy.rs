@@ -1,6 +1,10 @@
 use bevy::prelude::*;
 
-use crate::{navigation::NavAgent, *};
+use crate::{
+    common::{Health, Target},
+    navigation::NavAgent,
+    physics::PhysicsBundle,
+};
 
 #[derive(Default, Bundle, Reflect)]
 pub struct EnemyBundle {

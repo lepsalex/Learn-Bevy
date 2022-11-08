@@ -1,24 +1,18 @@
 use bevy::prelude::*;
 use bevy_mod_picking::Selection;
 
-pub struct GamePlugin;
+pub struct CommonPlugin;
 
-impl Plugin for GamePlugin {
+impl Plugin for CommonPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Lifetime>()
             .register_type::<Health>()
-            .add_startup_system_to_stage(StartupStage::PreStartup, asset_loading)
+            .register_type::<Target>()
             .add_system(selection_debug_logging)
             .add_system(lifetime)
             .add_system(death)
             .add_system_to_stage(CoreStage::PostUpdate, despawn);
     }
-}
-
-#[derive(Reflect, Component, Default)]
-#[reflect(Component)]
-pub struct Lifetime {
-    pub timer: Timer,
 }
 
 #[derive(Reflect, Component, Default)]
@@ -29,25 +23,17 @@ pub struct Health {
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
+pub struct Target;
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct Lifetime {
+    pub timer: Timer,
+}
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
 pub struct Despawn;
-
-pub struct GameAssets {
-    pub level_0: Handle<Scene>,
-    pub tower_scene: Handle<Scene>,
-    pub cannon_ball_scene: Handle<Scene>,
-    pub ufo_red_scene: Handle<Scene>,
-    pub tower_base_mesh: Handle<Mesh>,
-}
-
-fn asset_loading(mut commands: Commands, assets: Res<AssetServer>) {
-    commands.insert_resource(GameAssets {
-        level_0: assets.load("model/Level_0.glb#Scene0"),
-        tower_scene: assets.load("model/Tower.glb#Scene0"),
-        cannon_ball_scene: assets.load("model/CannonBall.glb#Scene0"),
-        ufo_red_scene: assets.load("model/UfoRed.glb#Scene0"),
-        tower_base_mesh: assets.load("model/TowerBase.glb#Mesh0/Primitive0"),
-    });
-}
 
 fn selection_debug_logging(selection: Query<(&Name, &Selection)>) {
     for (name, selection) in &selection {

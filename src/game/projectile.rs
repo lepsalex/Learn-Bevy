@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier3d::prelude::*;
 
-use crate::*;
+use crate::common::{Despawn, Health, Target};
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
@@ -23,7 +23,8 @@ impl Plugin for ProjectilePlugin {
 
 fn move_projectiles(mut projectiles: Query<(&Projectile, &mut Transform)>, time: Res<Time>) {
     for (projectile, mut transform) in &mut projectiles {
-        transform.translation += projectile.direction.normalize() * projectile.speed * time.delta_seconds();
+        transform.translation +=
+            projectile.direction.normalize() * projectile.speed * time.delta_seconds();
     }
 }
 

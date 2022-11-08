@@ -1,18 +1,11 @@
 mod enemy;
 mod game;
-mod physics;
-mod projectile;
-mod target;
 mod tower;
 mod tower_base;
 mod world;
 
 pub use enemy::*;
 pub use game::*;
-pub use level::*;
-pub use physics::*;
-pub use projectile::*;
-pub use target::*;
 pub use tower::*;
 pub use tower_base::*;
 pub use world::*;
@@ -62,12 +55,10 @@ fn main() {
         // Scene Hooks
         .add_plugin(HookPlugin)
         // Our Plugins
-        .add_plugin(GamePlugin)
+        .add_plugins(DefaultGamePlugins)
         .add_plugins(DefaultWorldPlugins)
         .add_plugin(TowerPlugin)
         .add_plugin(TowerBasePlugin)
-        .add_plugin(TargetPlugin)
-        .add_plugin(ProjectilePlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())

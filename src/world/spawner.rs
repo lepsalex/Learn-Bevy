@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
+    assets::GameAssets,
     navigation::{NavRoute, WAYPOINT_OFFSET},
     *,
 };

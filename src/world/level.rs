@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
 use crate::{
-    navigation::Waypoint, spawner::get_spawn_point_for_enemy_type, EnemyType, GameAssets,
+    assets::GameAssets, navigation::Waypoint, spawner::get_spawn_point_for_enemy_type, EnemyType,
     TowerBaseLocation,
 };
 
