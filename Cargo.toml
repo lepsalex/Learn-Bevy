@@ -1,5 +1,5 @@
 [package]
-name = "learn_bevy"
+name = "bevy_tower_defense"
 version = "0.1.0"
 edition = "2021"
 

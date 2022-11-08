@@ -39,7 +39,7 @@ fn main() {
         .insert_resource(WindowDescriptor {
             width: WIDTH,
             height: HEIGHT,
-            title: "Learn Bevy 1.0".to_string(),
+            title: "Bevy Tower Defense 0.1".to_string(),
             resizable: false,
             ..default()
         })
