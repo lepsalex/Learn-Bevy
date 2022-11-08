@@ -31,7 +31,8 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                     Attach required components for marked tiles
                     */
                     if name.starts_with(TOWER_BASE_LOCATION_NAME) {
-                        cmds.insert(TowerBaseLocation);
+                        cmds.insert(TowerBaseLocation)
+                            .insert(Name::new("TowerBaseLocation"));
                     }
 
                     if name.starts_with(SPAWN_LOCATION_NAME) {
@@ -51,7 +52,8 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                         cmds.insert(Waypoint {
                             id: data.get(2).unwrap().parse::<u32>().unwrap(),
                             spawn_id: data.get(1).unwrap().parse::<u32>().unwrap(),
-                        });
+                        })
+                        .insert(Name::new("Waypoint"));
                     }
                 });
             }),
