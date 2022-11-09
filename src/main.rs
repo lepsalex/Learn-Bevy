@@ -2,12 +2,14 @@ mod enemy;
 mod game;
 mod tower;
 mod tower_base;
+mod ui;
 mod world;
 
 pub use enemy::*;
 pub use game::*;
 pub use tower::*;
 pub use tower_base::*;
+pub use ui::*;
 pub use world::*;
 
 use bevy::{
@@ -59,6 +61,7 @@ fn main() {
         .add_plugins(DefaultWorldPlugins)
         .add_plugin(TowerPlugin)
         .add_plugin(TowerBasePlugin)
+        .add_plugin(UiPlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())

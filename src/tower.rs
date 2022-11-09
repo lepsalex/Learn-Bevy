@@ -26,6 +26,13 @@ pub struct Tower {
     pub bullet_offset: Vec3,
 }
 
+#[derive(Component, Clone, Copy, Debug)]
+pub enum TowerType {
+    Cannon,
+    Catapult,
+    Blaster,
+}
+
 fn build_tower(
     mut commands: Commands,
     selection: Query<(Entity, &Selection, &Transform)>,

@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_mod_picking::Selection;
 
 pub struct CommonPlugin;
 
@@ -8,7 +7,6 @@ impl Plugin for CommonPlugin {
         app.register_type::<Lifetime>()
             .register_type::<Health>()
             .register_type::<Target>()
-            .add_system(selection_debug_logging)
             .add_system(lifetime)
             .add_system(death)
             .add_system_to_stage(CoreStage::PostUpdate, despawn);
@@ -34,14 +32,6 @@ pub struct Lifetime {
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
 pub struct Despawn;
-
-fn selection_debug_logging(selection: Query<(&Name, &Selection)>) {
-    for (name, selection) in &selection {
-        if selection.selected() {
-            info!("{} is selected", name);
-        }
-    }
-}
 
 fn death(mut commands: Commands, targets: Query<(Entity, &Health)>) {
     for (ent, health) in &targets {
