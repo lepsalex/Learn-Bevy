@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
+    assets::GameAssets,
     common::{Health, Target},
     navigation::NavAgent,
     physics::PhysicsBundle,
@@ -39,20 +40,43 @@ impl EnemyBundle {
     }
 }
 
-#[derive(Reflect, Clone, Copy, Default)]
+#[derive(Reflect, Component, Clone, Copy, Default)]
 pub enum EnemyType {
     #[default]
     EnemyBasic,
 }
 
-pub fn get_enemy_bundle(enemy_type: EnemyType, nav_route: &Vec<Vec3>) -> EnemyBundle {
+pub fn spawn_enemy(
+    commands: &mut Commands,
+    location: Vec3,
+    enemy_type: EnemyType,
+    nav_route: &Vec<Vec3>,
+    game_assets: &Res<GameAssets>,
+) {
+    let mut common_cmds = commands.spawn_bundle(SpatialBundle {
+        transform: Transform::from_translation(location)
+            .looking_at(*nav_route.last().unwrap(), Vec3::Y),
+        ..default()
+    });
+
     match enemy_type {
-        EnemyType::EnemyBasic => EnemyBundle::new(
-            3,
-            0.6,
-            2.4,
-            nav_route.clone(),
-            PhysicsBundle::moving_entity_sphere(0.6),
-        ),
+        EnemyType::EnemyBasic => {
+            common_cmds
+                .insert_bundle(EnemyBundle::new(
+                    3,
+                    0.6,
+                    2.4,
+                    nav_route.clone(),
+                    PhysicsBundle::moving_entity_sphere(0.6),
+                ))
+                .insert(Name::new("Enemy (Basic)"))
+                .insert(EnemyType::EnemyBasic)
+                .with_children(|commands| {
+                    commands.spawn_bundle(SceneBundle {
+                        scene: game_assets.ufo_red_scene.clone(),
+                        ..default()
+                    });
+                });
+        }
     }
 }

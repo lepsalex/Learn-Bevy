@@ -26,7 +26,7 @@ pub struct Tower {
     pub bullet_offset: Vec3,
 }
 
-#[derive(Component, Clone, Copy, Debug)]
+#[derive(Component, Clone, Copy)]
 pub enum TowerType {
     Cannon,
     Catapult,

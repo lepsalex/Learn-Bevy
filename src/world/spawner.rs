@@ -59,26 +59,13 @@ fn spawner(
 
         // spawn an entity at the spawn point if the timer just finished
         if spawn_point.spawn_timer.just_finished() {
-            match spawn_point.enemy_type {
-                EnemyType::EnemyBasic => {
-                    commands
-                        .spawn_bundle(SpatialBundle {
-                            transform: Transform::from_translation(
-                                sp_transform.translation() + WAYPOINT_OFFSET,
-                            )
-                            .looking_at(*nav_route.route.last().unwrap(), Vec3::Y),
-                            ..default()
-                        })
-                        .insert(Name::new("Enemy (basic)"))
-                        .insert_bundle(get_enemy_bundle(EnemyType::EnemyBasic, &nav_route.route))
-                        .with_children(|commands| {
-                            commands.spawn_bundle(SceneBundle {
-                                scene: game_assets.ufo_red_scene.clone(),
-                                ..default()
-                            });
-                        });
-                }
-            }
+            spawn_enemy(
+                &mut commands,
+                sp_transform.translation() + WAYPOINT_OFFSET,
+                spawn_point.enemy_type,
+                &nav_route.route,
+                &game_assets,
+            );
 
             // increment spawn count
             spawn_point.num_spawned += 1;
