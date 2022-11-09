@@ -1,14 +1,46 @@
 use bevy::{pbr::NotShadowCaster, prelude::*};
 use bevy_mod_picking::{Highlighting, PickableBundle};
 
-use crate::assets::GameAssets;
+use crate::{assets::GameAssets, common::Despawn, TowerType};
 
-pub struct TowerBasePlugin;
+pub struct BuilderPlugin;
 
-impl Plugin for TowerBasePlugin {
+impl Plugin for BuilderPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<TowerBaseLocation>()
+            .register_type::<TowerBuilder>()
+            .add_system(tower_button_clicked)
             .add_system(spawn_tower_base_locations);
+    }
+}
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct TowerBuilder {
+    tower_type: TowerType,
+}
+
+fn tower_button_clicked(
+    mut commands: Commands,
+    interaction: Query<(&Interaction, &TowerType), Changed<Interaction>>,
+    builder: Query<Entity, With<TowerBuilder>>,
+) {
+    for (interaction, tower_type) in &interaction {
+        if matches!(interaction, Interaction::Clicked) {
+
+            // Mark old builder for removal
+            for entity in builder.iter() {
+                commands.entity(entity).insert(Despawn);
+            }
+
+            // Create new builder
+            commands
+                .spawn()
+                .insert(TowerBuilder {
+                    tower_type: tower_type.clone(),
+                })
+                .insert(Name::new("Tower Builder"));
+        }
     }
 }
 

@@ -1,14 +1,14 @@
 mod enemy;
 mod game;
 mod tower;
-mod tower_base;
+mod builder;
 mod ui;
 mod world;
 
 pub use enemy::*;
 pub use game::*;
 pub use tower::*;
-pub use tower_base::*;
+pub use builder::*;
 pub use ui::*;
 pub use world::*;
 
@@ -60,7 +60,8 @@ fn main() {
         .add_plugins(DefaultGamePlugins)
         .add_plugins(DefaultWorldPlugins)
         .add_plugin(TowerPlugin)
-        .add_plugin(TowerBasePlugin)
+        .add_plugin(EnemyPlugin)
+        .add_plugin(BuilderPlugin)
         .add_plugin(UiPlugin)
         // Debug Systems
         .add_plugin(LogDiagnosticsPlugin::default())

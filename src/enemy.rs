@@ -7,6 +7,23 @@ use crate::{
     physics::PhysicsBundle,
 };
 
+pub struct EnemyPlugin;
+
+impl Plugin for EnemyPlugin {
+    fn build(&self, app: &mut App) {
+        app.register_type::<EnemyType>()
+        .register_type::<EnemyBundle>();
+    }
+}
+
+#[derive(Reflect, Component, Clone, Copy, Default)]
+#[reflect(Component)]
+pub enum EnemyType {
+    #[default]
+    EnemyBasic,
+}
+
+
 #[derive(Default, Bundle, Reflect)]
 pub struct EnemyBundle {
     target: Target,
@@ -38,12 +55,6 @@ impl EnemyBundle {
             physics_bundle,
         }
     }
-}
-
-#[derive(Reflect, Component, Clone, Copy, Default)]
-pub enum EnemyType {
-    #[default]
-    EnemyBasic,
 }
 
 pub fn spawn_enemy(

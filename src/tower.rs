@@ -14,6 +14,7 @@ pub struct TowerPlugin;
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Tower>()
+        .register_type::<TowerType>()
             .add_system(build_tower)
             .add_system(tower_shooting);
     }
@@ -26,8 +27,10 @@ pub struct Tower {
     pub bullet_offset: Vec3,
 }
 
-#[derive(Component, Clone, Copy)]
+#[derive(Reflect, Component, Clone, Copy, Default)]
+#[reflect(Component)]
 pub enum TowerType {
+    #[default]
     Cannon,
     Catapult,
     Blaster,
@@ -87,35 +90,35 @@ fn spawn_tower(
             })
             .id(),
         TowerType::Catapult => common_cmds
-        .insert(Name::new("Tower (Catapult)"))
-        .insert(TowerType::Catapult)
-        .insert(Tower {
-            shooting_timer: Timer::from_seconds(0.5, true),
-            bullet_offset: Vec3::new(0.0, 0.6, 0.0),
-        })
-        .with_children(|commands| {
-            commands.spawn_bundle(SceneBundle {
-                scene: assets.tower_catapult_scene.clone(),
-                transform: Transform::from_xyz(0.0, -0.8, 0.0),
-                ..default()
-            });
-        })
-        .id(),
+            .insert(Name::new("Tower (Catapult)"))
+            .insert(TowerType::Catapult)
+            .insert(Tower {
+                shooting_timer: Timer::from_seconds(0.5, true),
+                bullet_offset: Vec3::new(0.0, 0.6, 0.0),
+            })
+            .with_children(|commands| {
+                commands.spawn_bundle(SceneBundle {
+                    scene: assets.tower_catapult_scene.clone(),
+                    transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                    ..default()
+                });
+            })
+            .id(),
         TowerType::Blaster => common_cmds
-        .insert(Name::new("Tower (Blaster)"))
-        .insert(TowerType::Blaster)
-        .insert(Tower {
-            shooting_timer: Timer::from_seconds(0.5, true),
-            bullet_offset: Vec3::new(0.0, 0.6, 0.0),
-        })
-        .with_children(|commands| {
-            commands.spawn_bundle(SceneBundle {
-                scene: assets.tower_blaster_scene.clone(),
-                transform: Transform::from_xyz(0.0, -0.8, 0.0),
-                ..default()
-            });
-        })
-        .id(),
+            .insert(Name::new("Tower (Blaster)"))
+            .insert(TowerType::Blaster)
+            .insert(Tower {
+                shooting_timer: Timer::from_seconds(0.5, true),
+                bullet_offset: Vec3::new(0.0, 0.6, 0.0),
+            })
+            .with_children(|commands| {
+                commands.spawn_bundle(SceneBundle {
+                    scene: assets.tower_blaster_scene.clone(),
+                    transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                    ..default()
+                });
+            })
+            .id(),
     }
 }
 
