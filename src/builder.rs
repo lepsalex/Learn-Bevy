@@ -281,11 +281,7 @@ fn confirm_build(
                     &mut commands,
                     builder.tower_type,
                     &assets,
-                    Vec3 {
-                        x: transform.translation.x,
-                        y: transform.translation.y + 0.9,
-                        z: transform.translation.z,
-                    },
+                    transform.translation,
                 );
 
                 // remove the builder

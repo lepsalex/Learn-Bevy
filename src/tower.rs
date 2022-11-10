@@ -55,7 +55,7 @@ pub fn spawn_tower(
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
                     scene: assets.tower_cannon_scene.clone(),
-                    transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
                     ..default()
                 });
             })
@@ -70,7 +70,7 @@ pub fn spawn_tower(
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
                     scene: assets.tower_catapult_scene.clone(),
-                    transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
                     ..default()
                 });
             })
@@ -85,7 +85,7 @@ pub fn spawn_tower(
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
                     scene: assets.tower_blaster_scene.clone(),
-                    transform: Transform::from_xyz(0.0, -0.8, 0.0),
+                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
                     ..default()
                 });
             })
