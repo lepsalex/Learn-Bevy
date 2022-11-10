@@ -1,13 +1,30 @@
 use bevy::prelude::*;
 
-use crate::{assets::UiAssets, TowerType};
+use crate::TowerType;
 
 pub struct UiPlugin;
 
 impl Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(ui);
+        app.add_startup_system_to_stage(StartupStage::PreStartup, load_ui_assets)
+            .add_startup_system(ui);
     }
+}
+
+/*
+   UI SPECIFIC ASSETS (ON STARTUP)
+*/
+pub struct UiAssets {
+    pub tower_cannon_icon: Handle<Image>,
+    pub tower_catapult_icon: Handle<Image>,
+    pub tower_blaster_icon: Handle<Image>,
+}
+fn load_ui_assets(mut commands: Commands, assets: Res<AssetServer>) {
+    commands.insert_resource(UiAssets {
+        tower_cannon_icon: assets.load("image/tower-cannon.png"),
+        tower_catapult_icon: assets.load("image/tower-catapult.png"),
+        tower_blaster_icon: assets.load("image/tower-blaster.png"),
+    });
 }
 
 pub struct RootUi;
