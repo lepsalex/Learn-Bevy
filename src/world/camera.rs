@@ -1,9 +1,8 @@
 use bevy::{core_pipeline::clear_color::ClearColorConfig, prelude::*};
 use bevy_mod_picking::PickingCameraBundle;
+use leafwing_input_manager::prelude::*;
 
-#[derive(Reflect, Component, Default)]
-#[reflect(Component)]
-pub struct GameCamera {}
+use crate::input::Action;
 
 pub struct CameraPlugin;
 
@@ -18,6 +17,10 @@ impl Plugin for CameraPlugin {
 const MAIN_CAMERA_SPEED: f32 = 3.0;
 const MAIN_CAMERA_ROTATION_SPEED: f32 = 1.0;
 
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct GameCamera {}
+
 fn spawn_main_camera(mut commands: Commands) {
     commands
         .spawn_bundle(Camera3dBundle {
@@ -29,12 +32,25 @@ fn spawn_main_camera(mut commands: Commands) {
             ..default()
         })
         .insert_bundle(PickingCameraBundle::default())
+        .insert_bundle(InputManagerBundle::<Action> {
+            // Stores "which actions are currently pressed"
+            action_state: ActionState::default(),
+            // Describes how to convert from player inputs into those actions
+            input_map: InputMap::new([
+                (KeyCode::W, Action::CameraMoveForward),
+                (KeyCode::S, Action::CameraMoveBackward),
+                (KeyCode::A, Action::CameraMoveLeft),
+                (KeyCode::D, Action::CameraMoveRight),
+                (KeyCode::Q, Action::CameraRotateLeft),
+                (KeyCode::E, Action::CameraRotateRight),
+            ]),
+        })
         .insert(GameCamera {})
         .insert(Name::new("Main Camera"));
 }
 
 fn camera_controls(
-    keyboard: Res<Input<KeyCode>>,
+    action: Query<&ActionState<Action>, With<GameCamera>>,
     mut camera_query: Query<&mut Transform, With<GameCamera>>,
     time: Res<Time>,
 ) {
@@ -51,25 +67,27 @@ fn camera_controls(
     left.y = 0.0;
     left = left.normalize();
 
+    let action_state = action.single();
+    
     // Handle Camera Movement Input
-    if keyboard.pressed(KeyCode::W) {
+    if action_state.pressed(Action::CameraMoveForward) {
         camera.translation += forward * time.delta_seconds() * MAIN_CAMERA_SPEED;
     }
-    if keyboard.pressed(KeyCode::S) {
+    if action_state.pressed(Action::CameraMoveBackward) {
         camera.translation -= forward * time.delta_seconds() * MAIN_CAMERA_SPEED;
     }
-    if keyboard.pressed(KeyCode::A) {
+    if action_state.pressed(Action::CameraMoveLeft) {
         camera.translation += left * time.delta_seconds() * MAIN_CAMERA_SPEED;
     }
-    if keyboard.pressed(KeyCode::D) {
+    if action_state.pressed(Action::CameraMoveRight) {
         camera.translation -= left * time.delta_seconds() * MAIN_CAMERA_SPEED;
     }
 
     // Handle Camera Rotation Input
-    if keyboard.pressed(KeyCode::Q) {
+    if action_state.pressed(Action::CameraRotateLeft) {
         camera.rotate_axis(Vec3::Y, MAIN_CAMERA_ROTATION_SPEED * time.delta_seconds())
     }
-    if keyboard.pressed(KeyCode::E) {
+    if action_state.pressed(Action::CameraRotateRight) {
         camera.rotate_axis(Vec3::Y, -MAIN_CAMERA_ROTATION_SPEED * time.delta_seconds())
     }
 }

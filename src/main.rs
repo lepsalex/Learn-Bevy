@@ -1,14 +1,14 @@
+mod builder;
 mod enemy;
 mod game;
 mod tower;
-mod builder;
 mod ui;
 mod world;
 
+pub use builder::*;
 pub use enemy::*;
 pub use game::*;
 pub use tower::*;
-pub use builder::*;
 pub use ui::*;
 pub use world::*;
 
@@ -17,7 +17,7 @@ use bevy::{
     prelude::*,
     utils::FloatOrd,
 };
-use bevy_editor_pls::prelude::*;
+use bevy_inspector_egui::WorldInspectorPlugin;
 use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_rapier3d::{
     prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
@@ -44,8 +44,8 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
-        // Editor Plugin
-        .add_plugin(EditorPlugin)
+        // Inspector Plugin
+        .add_plugin(WorldInspectorPlugin::new())
         // Mod Picking
         .add_plugins(DefaultPickingPlugins)
         // Physics
