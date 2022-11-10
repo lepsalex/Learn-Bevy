@@ -47,7 +47,7 @@ fn build_tower(
             if selection.selected() {
                 commands
                     .entity(entity)
-                    .remove_bundle::<TowerBaseLocationBundle>();
+                    .remove_bundle::<BuildLocationBundle>();
                 spawn_tower(
                     &mut commands,
                     TowerType::Blaster,

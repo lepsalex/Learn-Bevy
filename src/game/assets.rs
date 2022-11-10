@@ -15,12 +15,8 @@ pub struct GameAssets {
     pub tower_cannon_scene: Handle<Scene>,
     pub tower_catapult_scene: Handle<Scene>,
     pub tower_blaster_scene: Handle<Scene>,
-    pub tower_cannon_mesh: Handle<Mesh>,
-    pub tower_catapult_mesh: Handle<Mesh>,
-    pub tower_blaster_mesh: Handle<Mesh>,
     pub cannon_ball_scene: Handle<Scene>,
     pub ufo_red_scene: Handle<Scene>,
-    pub tower_base_mesh: Handle<Mesh>,
 }
 
 pub struct UiAssets {
@@ -36,12 +32,8 @@ fn load_game_assets(mut commands: Commands, assets: Res<AssetServer>) {
         tower_cannon_scene: assets.load("model/TowerCannon.glb#Scene0"),
         tower_catapult_scene: assets.load("model/TowerCatapult.glb#Scene0"),
         tower_blaster_scene: assets.load("model/TowerBlaster.glb#Scene0"),
-        tower_cannon_mesh: assets.load("model/TowerCannon.glb#Primitive0"),
-        tower_catapult_mesh: assets.load("model/TowerCatapult.glb#Primitive0"),
-        tower_blaster_mesh: assets.load("model/TowerBlaster.glb#Primitive0"),
         cannon_ball_scene: assets.load("model/CannonBall.glb#Scene0"),
         ufo_red_scene: assets.load("model/UfoRed.glb#Scene0"),
-        tower_base_mesh: assets.load("model/TowerBase.glb#Mesh0/Primitive0"),
     });
 }
 

@@ -3,7 +3,7 @@ use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
 use crate::{
     assets::GameAssets, navigation::Waypoint, spawner::get_spawn_point_for_enemy_type, EnemyType,
-    TowerBaseLocation,
+    BuildLocation,
 };
 
 pub struct LevelPlugin;
@@ -34,8 +34,8 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                     Attach required components for marked tiles
                     */
                     if name.starts_with(TOWER_BASE_LOCATION_NAME) {
-                        cmds.insert(TowerBaseLocation)
-                            .insert(Name::new("TowerBaseLocation"));
+                        cmds.insert(BuildLocation)
+                            .insert(Name::new("BuildLocation"));
                     }
 
                     if name.starts_with(SPAWN_LOCATION_NAME) {
