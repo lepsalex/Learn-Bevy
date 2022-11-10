@@ -1,7 +1,8 @@
-use bevy::{pbr::NotShadowCaster, prelude::*};
-use bevy_mod_picking::{Hover, PickableBundle};
+use bevy::{pbr::NotShadowCaster, prelude::*, ui::FocusPolicy};
+use bevy_mod_picking::{Hover, PickableMesh};
+use leafwing_input_manager::prelude::*;
 
-use crate::{common::Despawn, TowerType};
+use crate::{common::Despawn, input::Action, TowerType};
 
 pub struct BuilderPlugin;
 
@@ -58,8 +59,10 @@ pub struct MarkedBuildLocationBundle {
     marked_build_location: AvailableBuildLocation,
     build_location: Handle<Mesh>,
     not_shadow_caster: NotShadowCaster,
-    #[bundle]
-    pickable_bundle: PickableBundle,
+    pickable_mesh: PickableMesh,
+    interaction: Interaction,
+    focus_policy: FocusPolicy,
+    hover: Hover,
 }
 
 impl MarkedBuildLocationBundle {
@@ -68,7 +71,10 @@ impl MarkedBuildLocationBundle {
             marked_build_location: AvailableBuildLocation,
             build_location: assets.build_location.clone(),
             not_shadow_caster: NotShadowCaster,
-            pickable_bundle: PickableBundle::default(),
+            pickable_mesh: PickableMesh::default(),
+            interaction: Interaction::default(),
+            focus_policy: FocusPolicy::default(),
+            hover: Hover::default(),
         }
     }
 }
@@ -145,7 +151,16 @@ fn builder(
                 .insert(Builder {
                     tower_type: tower_type.clone(),
                 })
-                .insert(Name::new("Tower Builder"));
+                .insert_bundle(InputManagerBundle::<Action> {
+                    // Stores "which actions are currently pressed"
+                    action_state: ActionState::default(),
+                    // Describes how to convert from player inputs into those actions
+                    input_map: InputMap::new([
+                        (MouseButton::Left, Action::BuildTowerConfirm),
+                        (MouseButton::Right, Action::BuildTowerCancel),
+                    ]),
+                })
+                .insert(Name::new("Builder"));
         }
     }
 }
