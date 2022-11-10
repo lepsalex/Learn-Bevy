@@ -2,14 +2,14 @@ use bevy::{pbr::NotShadowCaster, prelude::*, ui::FocusPolicy};
 use bevy_mod_picking::{Hover, PickableMesh};
 use leafwing_input_manager::prelude::*;
 
-use crate::{common::Despawn, input::Action, TowerType};
+use crate::{assets::GameAssets, common::Despawn, input::Action, spawn_tower, TowerType};
 
 pub struct BuilderPlugin;
 
 impl Plugin for BuilderPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<BuildLocation>()
-            .register_type::<AvailableBuildLocation>()
+            .register_type::<PickableBuildLocation>()
             .register_type::<Builder>()
             .register_type::<BuilderHover>()
             .register_type::<BuilderBox>()
@@ -17,7 +17,9 @@ impl Plugin for BuilderPlugin {
             .add_system(builder)
             .add_system(mark_build_locations)
             .add_system(show_builder_box_on_hover_enter)
-            .add_system(hide_builder_box_on_hover_leave);
+            .add_system(hide_builder_box_on_hover_leave)
+            .add_system(cancel_build)
+            .add_system(confirm_build);
     }
 }
 
@@ -43,7 +45,7 @@ fn load_builder_assets(
 }
 
 /*
-    BUILD LOCATION => AVAILABLE BUILD LOCATION
+    BUILD LOCATION => PICKABLE BUILD LOCATION
 */
 
 #[derive(Reflect, Component, Default)]
@@ -52,11 +54,15 @@ pub struct BuildLocation;
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
-pub struct AvailableBuildLocation;
+pub struct PickableBuildLocation;
+
+#[derive(Reflect, Component, Default)]
+#[reflect(Component)]
+pub struct LocationBuilt;
 
 #[derive(Bundle)]
-pub struct MarkedBuildLocationBundle {
-    marked_build_location: AvailableBuildLocation,
+pub struct PickableBuildLocationBundle {
+    pickable_build_location: PickableBuildLocation,
     build_location: Handle<Mesh>,
     not_shadow_caster: NotShadowCaster,
     pickable_mesh: PickableMesh,
@@ -65,10 +71,10 @@ pub struct MarkedBuildLocationBundle {
     hover: Hover,
 }
 
-impl MarkedBuildLocationBundle {
+impl PickableBuildLocationBundle {
     pub fn new(assets: &Res<BuilderAssets>) -> Self {
         Self {
-            marked_build_location: AvailableBuildLocation,
+            pickable_build_location: PickableBuildLocation,
             build_location: assets.build_location.clone(),
             not_shadow_caster: NotShadowCaster,
             pickable_mesh: PickableMesh::default(),
@@ -81,13 +87,13 @@ impl MarkedBuildLocationBundle {
 
 fn mark_build_locations(
     mut commands: Commands,
-    build_locations_query: Query<Entity, (With<BuildLocation>, Without<AvailableBuildLocation>)>,
+    build_locations_query: Query<Entity, (With<BuildLocation>, Without<PickableBuildLocation>)>,
     assets: Res<BuilderAssets>,
 ) {
     for base in build_locations_query.iter() {
         commands
             .entity(base)
-            .insert_bundle(MarkedBuildLocationBundle::new(&assets));
+            .insert_bundle(PickableBuildLocationBundle::new(&assets));
     }
 }
 
@@ -170,8 +176,9 @@ fn show_builder_box_on_hover_enter(
     build_tile_hovered: Query<
         (Entity, &Hover),
         (
-            With<AvailableBuildLocation>,
+            With<PickableBuildLocation>,
             Without<BuilderHover>,
+            Without<LocationBuilt>,
             Changed<Interaction>,
         ),
     >,
@@ -200,18 +207,102 @@ fn hide_builder_box_on_hover_leave(
     mut commands: Commands,
     build_tile_hovered: Query<
         (Entity, &Hover),
-        (With<AvailableBuildLocation>, Changed<Interaction>),
+        (
+            With<PickableBuildLocation>,
+            Without<LocationBuilt>,
+            Changed<Interaction>,
+        ),
     >,
     build_placement_model: Query<Entity, With<BuilderBox>>,
 ) {
     for (entity, hover) in build_tile_hovered.iter() {
         if !hover.hovered() {
-            commands.entity(entity).remove::<BuilderHover>();
+            remove_hover(&mut commands, entity, &build_placement_model);
+        }
+    }
+}
 
-            for model in build_placement_model.iter() {
-                commands.entity(entity).remove_children(&[model]);
-                commands.entity(model).insert(Despawn);
+fn cancel_build(
+    mut commands: Commands,
+    builder_query: Query<Entity, With<Builder>>,
+    builder_action_query: Query<&ActionState<Action>, With<Builder>>,
+    build_placement_model: Query<Entity, With<BuilderBox>>,
+) {
+    // If we don't have a builder or builder_actions, exit
+    if builder_query.is_empty() || builder_action_query.is_empty() {
+        return;
+    }
+
+    let entity = builder_query.single();
+    let action_state = builder_action_query.single();
+
+    if action_state.just_pressed(Action::BuildTowerCancel) {
+        // remove hover components and entities
+        remove_hover(&mut commands, entity, &build_placement_model);
+
+        // despawn builder
+        commands.entity(entity).insert(Despawn);
+    }
+}
+
+fn confirm_build(
+    mut commands: Commands,
+    builder_query: Query<(Entity, &Builder)>,
+    builder_action_query: Query<&ActionState<Action>, With<Builder>>,
+    build_tile_hovered: Query<
+        (Entity, &Hover, &Transform),
+        (With<PickableBuildLocation>, Without<LocationBuilt>),
+    >,
+    build_placement_model: Query<Entity, With<BuilderBox>>,
+    assets: Res<GameAssets>,
+) {
+    // If we don't have a builder or builder_actions, exit
+    if builder_query.is_empty() || builder_action_query.is_empty() {
+        return;
+    }
+
+    let (builder_entity, builder) = builder_query.single();
+    let action_state = builder_action_query.single();
+
+    if action_state.just_pressed(Action::BuildTowerConfirm) {
+        for (entity, hover, transform) in build_tile_hovered.iter() {
+            if hover.hovered() {
+                // remove hover components and entities
+                remove_hover(&mut commands, entity, &build_placement_model);
+
+                // insert LocationBuilt and remove marked build location
+                commands
+                    .entity(entity)
+                    .insert(LocationBuilt)
+                    .remove_bundle::<PickableBuildLocationBundle>();
+
+                // spawn the tower
+                spawn_tower(
+                    &mut commands,
+                    builder.tower_type,
+                    &assets,
+                    Vec3 {
+                        x: transform.translation.x,
+                        y: transform.translation.y + 0.9,
+                        z: transform.translation.z,
+                    },
+                );
+
+                // remove the builder
+                commands.entity(builder_entity).insert(Despawn);
             }
         }
+    }
+}
+
+fn remove_hover(
+    commands: &mut Commands,
+    entity: Entity,
+    build_placement_model: &Query<Entity, With<BuilderBox>>,
+) {
+    commands.entity(entity).remove::<BuilderHover>();
+    for model in build_placement_model.iter() {
+        commands.entity(entity).remove_children(&[model]);
+        commands.entity(model).insert(Despawn);
     }
 }

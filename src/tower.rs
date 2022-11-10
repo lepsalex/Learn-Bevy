@@ -7,15 +7,13 @@ use crate::{
 };
 
 use bevy::prelude::*;
-use bevy_mod_picking::Selection;
 
 pub struct TowerPlugin;
 
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Tower>()
-        .register_type::<TowerType>()
-            .add_system(build_tower)
+            .register_type::<TowerType>()
             .add_system(tower_shooting);
     }
 }
@@ -36,34 +34,7 @@ pub enum TowerType {
     Blaster,
 }
 
-fn build_tower(
-    mut commands: Commands,
-    selection: Query<(Entity, &Selection, &Transform)>,
-    keyboard: Res<Input<KeyCode>>,
-    assets: Res<GameAssets>,
-) {
-    if keyboard.just_pressed(KeyCode::Space) {
-        for (entity, selection, transform) in &selection {
-            if selection.selected() {
-                commands
-                    .entity(entity)
-                    .remove_bundle::<MarkedBuildLocationBundle>();
-                spawn_tower(
-                    &mut commands,
-                    TowerType::Blaster,
-                    &assets,
-                    Vec3 {
-                        x: transform.translation.x,
-                        y: transform.translation.y + 0.9,
-                        z: transform.translation.z,
-                    },
-                );
-            }
-        }
-    }
-}
-
-fn spawn_tower(
+pub fn spawn_tower(
     commands: &mut Commands,
     tower_type: TowerType,
     assets: &GameAssets,
