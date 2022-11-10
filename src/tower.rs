@@ -22,7 +22,8 @@ impl Plugin for TowerPlugin {
 #[reflect(Component)]
 pub struct Tower {
     pub shooting_timer: Timer,
-    pub bullet_offset: Vec3,
+    pub projectile_offset: Vec3,
+    pub range: f32,
 }
 
 #[derive(Reflect, Component, Clone, Copy, Default)]
@@ -50,7 +51,8 @@ pub fn spawn_tower(
             .insert(TowerType::Cannon)
             .insert(Tower {
                 shooting_timer: Timer::from_seconds(0.5, true),
-                bullet_offset: Vec3::new(0.0, 0.6, 0.0),
+                projectile_offset: Vec3::new(0.0, 0.6, 0.0),
+                range: 3.0,
             })
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
@@ -65,7 +67,8 @@ pub fn spawn_tower(
             .insert(TowerType::Catapult)
             .insert(Tower {
                 shooting_timer: Timer::from_seconds(0.5, true),
-                bullet_offset: Vec3::new(0.0, 0.6, 0.0),
+                projectile_offset: Vec3::new(0.0, 0.6, 0.0),
+                range: 3.0,
             })
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
@@ -80,7 +83,8 @@ pub fn spawn_tower(
             .insert(TowerType::Blaster)
             .insert(Tower {
                 shooting_timer: Timer::from_seconds(0.5, true),
-                bullet_offset: Vec3::new(0.0, 0.6, 0.0),
+                projectile_offset: Vec3::new(0.0, 0.6, 0.0),
+                range: 3.0,
             })
             .with_children(|commands| {
                 commands.spawn_bundle(SceneBundle {
@@ -104,10 +108,14 @@ fn tower_shooting(
         tower.shooting_timer.tick(time.delta());
 
         if tower.shooting_timer.just_finished() {
-            let bullet_spawn = transform.translation() + tower.bullet_offset;
+            let bullet_spawn = transform.translation() + tower.projectile_offset;
 
             let bullet_direction = targets
                 .iter()
+                // filter out targets that are out of range
+                .filter(|target_transform| {
+                    Vec3::distance(target_transform.translation(), bullet_spawn) <= tower.range
+                })
                 // order targets by distance, closest first
                 .min_by_key(|target_transform| {
                     FloatOrd(Vec3::distance(target_transform.translation(), bullet_spawn))
@@ -119,7 +127,7 @@ fn tower_shooting(
                 commands.entity(tower_entity).with_children(|commands| {
                     commands
                         .spawn_bundle(SpatialBundle {
-                            transform: Transform::from_translation(tower.bullet_offset),
+                            transform: Transform::from_translation(tower.projectile_offset),
                             ..default()
                         })
                         .insert(Name::new("Bullet"))
