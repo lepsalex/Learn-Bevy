@@ -1,4 +1,4 @@
-use bevy::{core_pipeline::clear_color::ClearColorConfig, prelude::*};
+use bevy::{core_pipeline::clear_color::ClearColorConfig, prelude::*, render::camera::ScalingMode};
 use bevy_mod_picking::PickingCameraBundle;
 use leafwing_input_manager::prelude::*;
 
@@ -14,8 +14,8 @@ impl Plugin for CameraPlugin {
     }
 }
 
-const MAIN_CAMERA_SPEED: f32 = 3.0;
-const MAIN_CAMERA_ROTATION_SPEED: f32 = 1.0;
+const MAIN_CAMERA_SPEED: f32 = 10.0;
+const MAIN_CAMERA_ROTATION_SPEED: f32 = 3.0;
 
 #[derive(Reflect, Component, Default)]
 #[reflect(Component)]
@@ -28,7 +28,13 @@ fn spawn_main_camera(mut commands: Commands) {
                 clear_color: ClearColorConfig::Custom(Color::hsl(209.0, 0.45, 0.22)),
                 ..default()
             },
-            transform: Transform::from_xyz(4.0, 7.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+            transform: Transform::from_xyz(20.0, 20.0, 20.0).looking_at(Vec3::ZERO, Vec3::Y),
+            projection: OrthographicProjection {
+                scale: 12.0,
+                scaling_mode: ScalingMode::FixedVertical(2.0),
+                ..default()
+            }
+            .into(),
             ..default()
         })
         .insert_bundle(PickingCameraBundle::default())
@@ -41,8 +47,8 @@ fn spawn_main_camera(mut commands: Commands) {
                 (KeyCode::S, Action::CameraMoveBackward),
                 (KeyCode::A, Action::CameraMoveLeft),
                 (KeyCode::D, Action::CameraMoveRight),
-                (KeyCode::Q, Action::CameraRotateLeft),
-                (KeyCode::E, Action::CameraRotateRight),
+                // (KeyCode::Q, Action::CameraRotateLeft),
+                // (KeyCode::E, Action::CameraRotateRight),
             ]),
         })
         .insert(GameCamera {})
@@ -68,7 +74,7 @@ fn camera_controls(
     left = left.normalize();
 
     let action_state = action.single();
-    
+
     // Handle Camera Movement Input
     if action_state.pressed(Action::CameraMoveForward) {
         camera.translation += forward * time.delta_seconds() * MAIN_CAMERA_SPEED;

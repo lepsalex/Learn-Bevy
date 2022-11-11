@@ -81,8 +81,8 @@ fn init_nav_routes(
     let mut routes: HashMap<u32, Vec<Vec3>> = HashMap::default();
 
     for (spawn_id, mut waypoints) in grouped {
-        // Sort by waypoint id
-        waypoints.sort_by(|(wp_a, _), (wp_b, _)| wp_b.cmp(&wp_a));
+        // Sort by waypoint id (ascending)
+        waypoints.sort_by(|(wp_a, _), (wp_b, _)| wp_a.cmp(&wp_b));
 
         routes.insert(
             spawn_id.clone(),

@@ -75,7 +75,7 @@ pub fn spawn_enemy(
             common_cmds
                 .insert_bundle(EnemyBundle::new(
                     3,
-                    0.6,
+                    1.2,
                     2.4,
                     nav_route.clone(),
                     PhysicsBundle::moving_entity_sphere(0.6),

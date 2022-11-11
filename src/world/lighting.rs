@@ -9,7 +9,7 @@ impl Plugin for LightingPlugin {
 
 fn spawn_lighting(mut commands: Commands) {
     // Spawn Main Light
-    const HALF_SIZE: f32 = 10.0;
+    const HALF_SIZE: f32 = 24.0;
     commands
         .spawn_bundle(DirectionalLightBundle {
             directional_light: DirectionalLight {
@@ -29,7 +29,7 @@ fn spawn_lighting(mut commands: Commands) {
             },
             transform: Transform {
                 translation: Vec3::new(0.0, 2.0, 0.0),
-                rotation: Quat::from_rotation_x(-std::f32::consts::FRAC_PI_4),
+                rotation: Quat::from_euler(EulerRot::XYZ, 5.3, 0.0, 0.0),
                 ..default()
             },
             ..default()
