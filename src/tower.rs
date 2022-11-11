@@ -1,6 +1,7 @@
 use crate::{
     assets::GameAssets,
     common::{Lifetime, Target},
+    navigation::NavAgent,
     physics::PhysicsBundle,
     projectile::Projectile,
     *,
@@ -100,7 +101,7 @@ pub fn spawn_tower(
 fn tower_shooting(
     mut commands: Commands,
     mut towers: Query<(Entity, &mut Tower, &GlobalTransform)>,
-    targets: Query<&GlobalTransform, With<Target>>,
+    targets: Query<(&GlobalTransform, &NavAgent), With<Target>>,
     game_assets: Res<GameAssets>,
     time: Res<Time>,
 ) {
@@ -108,22 +109,34 @@ fn tower_shooting(
         tower.shooting_timer.tick(time.delta());
 
         if tower.shooting_timer.just_finished() {
-            let bullet_spawn = transform.translation() + tower.projectile_offset;
+            let projectile_speed = 2.5; // move this to component
+            let projectile_spawn = transform.translation() + tower.projectile_offset;
 
-            let bullet_direction = targets
+            let projectile_direction = targets
                 .iter()
                 // filter out targets that are out of range
-                .filter(|target_transform| {
-                    Vec3::distance(target_transform.translation(), bullet_spawn) <= tower.range
+                .filter(|(target_transform, _)| {
+                    Vec3::distance(target_transform.translation(), projectile_spawn) <= tower.range
                 })
                 // order targets by distance, closest first
-                .min_by_key(|target_transform| {
-                    FloatOrd(Vec3::distance(target_transform.translation(), bullet_spawn))
+                .min_by_key(|(target_transform, _)| {
+                    FloatOrd(Vec3::distance(
+                        target_transform.translation(),
+                        projectile_spawn,
+                    ))
                 })
-                // convert closest target location to direction vector
-                .map(|closest_target| closest_target.translation() - bullet_spawn);
+                // basic target movement prediction
+                .map(|(closest_target, nav_agent)| {
+                    let distance = Vec3::distance(closest_target.translation(), projectile_spawn);
+                    let time_to_target = distance / projectile_speed;
+                    let prediction_vector =
+                        closest_target.forward() * nav_agent.move_speed * time_to_target;
+                    
+                    // predicted location - projectile spawn = projectile direction vector
+                    return closest_target.translation() + prediction_vector - projectile_spawn;
+                });
 
-            if let Some(bullet_direction) = bullet_direction {
+            if let Some(bullet_direction) = projectile_direction {
                 commands.entity(tower_entity).with_children(|commands| {
                     commands
                         .spawn_bundle(SpatialBundle {
@@ -136,7 +149,7 @@ fn tower_shooting(
                         })
                         .insert(Projectile {
                             direction: bullet_direction,
-                            speed: 2.5,
+                            speed: projectile_speed,
                             damage: 1,
                         })
                         .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
