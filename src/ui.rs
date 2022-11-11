@@ -36,7 +36,8 @@ fn ui(mut commands: Commands, ui_assets: Res<UiAssets>) {
         .spawn_bundle(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
-                justify_content: JustifyContent::Center,
+                padding: UiRect::all(Val::Px(16.0)),
+                justify_content: JustifyContent::FlexEnd,
                 ..default()
             },
             color: Color::NONE.into(),
@@ -47,9 +48,9 @@ fn ui(mut commands: Commands, ui_assets: Res<UiAssets>) {
                 commands
                     .spawn_bundle(ButtonBundle {
                         style: Style {
-                            size: Size::new(Val::Percent(15.0 * 9.0 / 16.0), Val::Percent(15.0)),
+                            size: Size::new(Val::Px(64.0), Val::Px(64.0)),
                             align_self: AlignSelf::FlexStart,
-                            margin: UiRect::all(Val::Percent(2.0)),
+                            margin: UiRect::all(Val::Px(16.0)),
                             ..default()
                         },
                         image: match tower_type {

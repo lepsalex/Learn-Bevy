@@ -45,6 +45,7 @@ pub struct Waypoint {
 pub struct NavigationInitiated;
 
 pub const WAYPOINT_OFFSET: Vec3 = Vec3::new(0.0, 0.5, 0.0);
+const DESTINATION_TOLERANCE: f32 = 0.6;
 
 fn init_nav_routes(
     mut commands: Commands,
@@ -108,8 +109,6 @@ fn init_nav_routes(
         }
     }
 }
-
-const DESTINATION_TOLERANCE: f32 = 0.2;
 
 fn init_nav_agents(
     mut commands: Commands,

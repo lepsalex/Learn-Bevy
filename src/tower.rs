@@ -50,7 +50,7 @@ pub fn spawn_tower(
             .insert(Name::new("Tower (Cannon)"))
             .insert(TowerType::Cannon)
             .insert(Tower {
-                shooting_timer: Timer::from_seconds(0.5, true),
+                shooting_timer: Timer::from_seconds(2.0, true),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
             })
@@ -66,7 +66,7 @@ pub fn spawn_tower(
             .insert(Name::new("Tower (Catapult)"))
             .insert(TowerType::Catapult)
             .insert(Tower {
-                shooting_timer: Timer::from_seconds(0.5, true),
+                shooting_timer: Timer::from_seconds(2.0, true),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
             })
@@ -82,7 +82,7 @@ pub fn spawn_tower(
             .insert(Name::new("Tower (Blaster)"))
             .insert(TowerType::Blaster)
             .insert(Tower {
-                shooting_timer: Timer::from_seconds(0.5, true),
+                shooting_timer: Timer::from_seconds(2.0, true),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
             })

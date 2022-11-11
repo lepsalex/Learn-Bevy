@@ -78,7 +78,7 @@ pub fn spawn_enemy(
                     1.2,
                     2.4,
                     nav_route.clone(),
-                    PhysicsBundle::moving_entity_sphere(0.6),
+                    PhysicsBundle::moving_entity_sphere(0.55),
                 ))
                 .insert(Name::new("Enemy (Basic)"))
                 .insert(EnemyType::EnemyBasic)
