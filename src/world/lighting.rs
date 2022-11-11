@@ -29,7 +29,7 @@ fn spawn_lighting(mut commands: Commands) {
             },
             transform: Transform {
                 translation: Vec3::new(0.0, 5.0, 0.0),
-                rotation: Quat::from_euler(EulerRot::XYZ, -2.25, 0.5, 0.0),
+                rotation: Quat::from_euler(EulerRot::XYZ, -1.0, -0.5, 0.0),
                 ..default()
             },
             ..default()
