@@ -26,6 +26,7 @@ impl Plugin for BuilderPlugin {
 /*
    BUILDER SPECIFIC ASSETS (ON STARTUP)
 */
+#[derive(Resource)]
 pub struct BuilderAssets {
     pub build_location: Handle<Mesh>,
     pub builder_box: Handle<Mesh>,
@@ -93,7 +94,7 @@ fn mark_build_locations(
     for base in build_locations_query.iter() {
         commands
             .entity(base)
-            .insert_bundle(PickableBuildLocationBundle::new(&assets));
+            .insert(PickableBuildLocationBundle::new(&assets));
     }
 }
 
@@ -118,8 +119,6 @@ pub struct BuilderBox;
 #[derive(Bundle, Reflect, Default)]
 pub struct BuilderBoxBundle {
     builder_box: BuilderBox,
-    #[bundle]
-    #[reflect(ignore)]
     pbr_bundle: PbrBundle,
     no_shadow_caster: NotShadowCaster,
 }
@@ -152,12 +151,11 @@ fn builder(
             }
 
             // Create new builder
-            commands
-                .spawn()
-                .insert(Builder {
+            commands.spawn((
+                Builder {
                     tower_type: tower_type.clone(),
-                })
-                .insert_bundle(InputManagerBundle::<Action> {
+                },
+                InputManagerBundle::<Action> {
                     // Stores "which actions are currently pressed"
                     action_state: ActionState::default(),
                     // Describes how to convert from player inputs into those actions
@@ -165,8 +163,9 @@ fn builder(
                         (MouseButton::Left, Action::BuildTowerConfirm),
                         (MouseButton::Right, Action::BuildTowerCancel),
                     ]),
-                })
-                .insert(Name::new("Builder"));
+                },
+                Name::new("Builder"),
+            ));
         }
     }
 }
@@ -197,7 +196,7 @@ fn show_builder_box_on_hover_enter(
                 .entity(entity)
                 .insert(BuilderHover)
                 .with_children(|cmd| {
-                    cmd.spawn_bundle(BuilderBoxBundle::new(&assets));
+                    cmd.spawn(BuilderBoxBundle::new(&assets));
                 });
         }
     }
@@ -274,7 +273,7 @@ fn confirm_build(
                 commands
                     .entity(entity)
                     .insert(LocationBuilt)
-                    .remove_bundle::<PickableBuildLocationBundle>();
+                    .remove::<PickableBuildLocationBundle>();
 
                 // spawn the tower
                 spawn_tower(

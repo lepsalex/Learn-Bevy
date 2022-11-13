@@ -30,26 +30,24 @@ pub const HEIGHT: f32 = 720.0;
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::rgb(0.2, 0.2, 0.2)))
-        .insert_resource(WindowDescriptor {
+        .add_plugins(DefaultPlugins.set(WindowDescriptor {
             width: WIDTH,
             height: HEIGHT,
             title: "Bevy Tower Defense 0.1".to_string(),
             resizable: false,
             ..default()
-        })
-        .insert_resource(Msaa { samples: 4 })
-        .insert_resource(RapierConfiguration {
-            gravity: Vec3::ZERO,
-            ..default()
-        })
-        .add_plugins(DefaultPlugins)
+        }))
         // Inspector Plugin
         .add_plugin(WorldInspectorPlugin::new())
         // Mod Picking
         .add_plugins(DefaultPickingPlugins)
         // Physics
-        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
+        .add_plugin(
+            RapierPhysicsPlugin::<NoUserData>::default().set(RapierConfiguration {
+                gravity: Vec3::ZERO,
+                ..default()
+            }),
+        )
         .add_plugin(RapierDebugRenderPlugin {
             mode: DebugRenderMode::COLLIDER_SHAPES,
             ..default()

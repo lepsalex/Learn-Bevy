@@ -22,8 +22,8 @@ const MAIN_CAMERA_ROTATION_SPEED: f32 = 3.0;
 pub struct GameCamera {}
 
 fn spawn_main_camera(mut commands: Commands) {
-    commands
-        .spawn_bundle(Camera3dBundle {
+    commands.spawn((
+        Camera3dBundle {
             camera_3d: Camera3d {
                 clear_color: ClearColorConfig::Custom(Color::hsl(209.0, 0.45, 0.22)),
                 ..default()
@@ -36,9 +36,9 @@ fn spawn_main_camera(mut commands: Commands) {
             }
             .into(),
             ..default()
-        })
-        .insert_bundle(PickingCameraBundle::default())
-        .insert_bundle(InputManagerBundle::<Action> {
+        },
+        PickingCameraBundle::default(),
+        InputManagerBundle::<Action> {
             // Stores "which actions are currently pressed"
             action_state: ActionState::default(),
             // Describes how to convert from player inputs into those actions
@@ -50,9 +50,10 @@ fn spawn_main_camera(mut commands: Commands) {
                 // (KeyCode::Q, Action::CameraRotateLeft),
                 // (KeyCode::E, Action::CameraRotateRight),
             ]),
-        })
-        .insert(GameCamera {})
-        .insert(Name::new("Main Camera"));
+        },
+        GameCamera {},
+        Name::new("Main Camera"),
+    ));
 }
 
 fn camera_controls(

@@ -12,7 +12,7 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
-bevy = { version = "0.8.1" }
+bevy = { version = "0.9.0" }
 bevy-inspector-egui = "0.13.0"
 bevy-scene-hook = "4.1.0"
 bevy_mod_picking = "0.9.0"

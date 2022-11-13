@@ -12,10 +12,11 @@ pub mod projectile;
 
 pub struct DefaultGamePlugins;
 impl PluginGroup for DefaultGamePlugins {
-    fn build(&mut self, group: &mut PluginGroupBuilder) {
-        group.add(AssetsPlugin);
-        group.add(InputPlugin);
-        group.add(CommonPlugin);
-        group.add(ProjectilePlugin);
+    fn build(self) -> PluginGroupBuilder {
+        PluginGroupBuilder::start::<Self>()
+            .add(AssetsPlugin)
+            .add(InputPlugin)
+            .add(CommonPlugin)
+            .add(ProjectilePlugin)
     }
 }

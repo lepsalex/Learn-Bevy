@@ -32,7 +32,7 @@ pub fn get_spawn_point_for_enemy_type(id: u32, enemy_type: EnemyType) -> SpawnPo
     SpawnPoint {
         id,
         enemy_type,
-        spawn_timer: Timer::from_seconds(3.0, true),
+        spawn_timer: Timer::from_seconds(3.0, TimerMode::Repeating),
         max_spawns: 99,
         ..default()
     }
