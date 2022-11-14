@@ -13,8 +13,15 @@ opt-level = 3
 
 [dependencies]
 bevy = { version = "0.9.0" }
-bevy-inspector-egui = "0.13.0"
-bevy-scene-hook = "4.1.0"
-bevy_mod_picking = "0.9.0"
-bevy_rapier3d = { version =  "0.18.0", features = [ "simd-stable", "debug-render" ] }
-leafwing-input-manager = "0.6.1"
+bevy-inspector-egui = "0.14.0"
+bevy-scene-hook = "5.1.1"
+bevy_mod_picking = "0.10.0"
+# bevy_rapier3d = { version = "0.18.0", features = [
+#     "simd-stable",
+#     "debug-render",
+# ] }
+bevy_rapier3d = { git = "https://github.com/devil-ira/bevy_rapier", branch = "bevy-0.9", features = [
+    "simd-stable",
+    "debug-render",
+] }
+leafwing-input-manager = "0.7.0"
