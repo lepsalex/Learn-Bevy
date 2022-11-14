@@ -23,18 +23,24 @@ use bevy_rapier3d::{
     prelude::{NoUserData, RapierConfiguration, RapierPhysicsPlugin},
     render::{DebugRenderMode, RapierDebugRenderPlugin},
 };
-use bevy_scene_hook::HookPlugin;
 
 pub const WIDTH: f32 = 1280.0;
 pub const HEIGHT: f32 = 720.0;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowDescriptor {
-            width: WIDTH,
-            height: HEIGHT,
-            title: "Bevy Tower Defense 0.1".to_string(),
-            resizable: false,
+        .insert_resource(RapierConfiguration {
+            gravity: Vec3::ZERO,
+            ..default()
+        })
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            window: WindowDescriptor {
+                width: WIDTH,
+                height: HEIGHT,
+                title: "Bevy Tower Defense 0.1".to_string(),
+                resizable: false,
+                ..default()
+            },
             ..default()
         }))
         // Inspector Plugin
@@ -42,18 +48,11 @@ fn main() {
         // Mod Picking
         .add_plugins(DefaultPickingPlugins)
         // Physics
-        .add_plugin(
-            RapierPhysicsPlugin::<NoUserData>::default().set(RapierConfiguration {
-                gravity: Vec3::ZERO,
-                ..default()
-            }),
-        )
+        .add_plugin(RapierPhysicsPlugin::<NoUserData>::default())
         .add_plugin(RapierDebugRenderPlugin {
             mode: DebugRenderMode::COLLIDER_SHAPES,
             ..default()
         })
-        // Scene Hooks
-        .add_plugin(HookPlugin)
         // Our Plugins
         .add_plugins(DefaultGamePlugins)
         .add_plugins(DefaultWorldPlugins)

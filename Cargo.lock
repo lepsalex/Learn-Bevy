@@ -259,15 +259,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy-scene-hook"
-version = "5.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "912f32c78e3c195c1a66aedeea6f0f4b36661a99d6cc21f542ded183645b8090"
-dependencies = [
- "bevy",
-]
-
-[[package]]
 name = "bevy_animation"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -868,7 +859,6 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
- "bevy-scene-hook",
  "bevy_mod_picking",
  "bevy_rapier3d",
  "leafwing-input-manager",

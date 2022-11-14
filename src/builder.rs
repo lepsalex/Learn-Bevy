@@ -119,6 +119,7 @@ pub struct BuilderBox;
 #[derive(Bundle, Reflect, Default)]
 pub struct BuilderBoxBundle {
     builder_box: BuilderBox,
+    #[reflect(ignore)]
     pbr_bundle: PbrBundle,
     no_shadow_caster: NotShadowCaster,
 }
@@ -249,7 +250,7 @@ fn confirm_build(
     builder_query: Query<(Entity, &Builder)>,
     builder_action_query: Query<&ActionState<Action>, With<Builder>>,
     build_tile_hovered: Query<
-        (Entity, &Hover, &Transform),
+        (Entity, &Hover, &GlobalTransform),
         (With<PickableBuildLocation>, Without<LocationBuilt>),
     >,
     build_placement_model: Query<Entity, With<BuilderBox>>,
@@ -280,7 +281,7 @@ fn confirm_build(
                     &mut commands,
                     builder.tower_type,
                     &assets,
-                    transform.translation,
+                    transform.translation(),
                 );
 
                 // remove the builder

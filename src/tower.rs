@@ -42,11 +42,14 @@ pub fn spawn_tower(
     assets: &GameAssets,
     position: Vec3,
 ) -> Entity {
+    // Tower spawn position needs a slight offset in the y axis
+    let offset_tower_position = Transform::from_xyz(position.x, position.y + 0.1, position.z);
+
     match tower_type {
         TowerType::Cannon => commands.spawn((
             SceneBundle {
                 scene: assets.tower_cannon_scene.clone(),
-                transform: Transform::from_translation(position),
+                transform: offset_tower_position,
                 ..default()
             },
             Name::new("Tower (Cannon)"),
@@ -60,7 +63,7 @@ pub fn spawn_tower(
         TowerType::Catapult => commands.spawn((
             SceneBundle {
                 scene: assets.tower_catapult_scene.clone(),
-                transform: Transform::from_translation(position),
+                transform: offset_tower_position,
                 ..default()
             },
             Name::new("Tower (Catapult)"),
@@ -74,7 +77,7 @@ pub fn spawn_tower(
         TowerType::Blaster => commands.spawn((
             SceneBundle {
                 scene: assets.tower_blaster_scene.clone(),
-                transform: Transform::from_translation(position),
+                transform: offset_tower_position,
                 ..default()
             },
             Name::new("Tower (Blaster)"),

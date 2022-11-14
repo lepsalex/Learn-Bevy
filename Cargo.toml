@@ -14,7 +14,6 @@ opt-level = 3
 [dependencies]
 bevy = { version = "0.9.0" }
 bevy-inspector-egui = "0.14.0"
-bevy-scene-hook = "5.1.1"
 bevy_mod_picking = "0.10.0"
 # bevy_rapier3d = { version = "0.18.0", features = [
 #     "simd-stable",
