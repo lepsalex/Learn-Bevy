@@ -1,9 +1,11 @@
 use bevy::prelude::*;
-use bevy_scene_hook::{HookedSceneBundle, SceneHook};
 
 use crate::{
-    assets::GameAssets, navigation::Waypoint, spawner::get_spawn_point_for_enemy_type, EnemyType,
-    BuildLocation,
+    assets::GameAssets,
+    hooks::{HookedSceneBundle, SceneHook},
+    navigation::Waypoint,
+    spawner::get_spawn_point_for_enemy_type,
+    BuildLocation, EnemyType,
 };
 
 pub struct LevelPlugin;
@@ -21,11 +23,10 @@ const WAYPOINT_LOCATION_NAME: &str = "waypoint";
 
 fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
     // Spawn Level
-    commands
-        .spawn_bundle(HookedSceneBundle {
+    commands.spawn((
+        HookedSceneBundle {
             scene: SceneBundle {
                 scene: game_assets.level_0.clone(),
-                transform: Transform::from_xyz(0.0, 0.0, 0.0),
                 ..default()
             },
             hook: SceneHook::new(|entity, cmds| {
@@ -33,6 +34,7 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                     /*
                     Attach required components for marked tiles
                     */
+
                     if name.starts_with(TOWER_BASE_LOCATION_NAME) {
                         cmds.insert(BuildLocation)
                             .insert(Name::new("BuildLocation"));
@@ -57,6 +59,7 @@ fn spawn_level(mut commands: Commands, game_assets: Res<GameAssets>) {
                     }
                 });
             }),
-        })
-        .insert(Name::new("Level"));
+        },
+        Name::new("Level"),
+    ));
 }

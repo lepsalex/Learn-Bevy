@@ -10,8 +10,8 @@ impl Plugin for LightingPlugin {
 fn spawn_lighting(mut commands: Commands) {
     // Spawn Main Light
     const HALF_SIZE: f32 = 20.0;
-    commands
-        .spawn_bundle(DirectionalLightBundle {
+    commands.spawn((
+        DirectionalLightBundle {
             directional_light: DirectionalLight {
                 illuminance: 20000.0,
                 // Configure the projection to better fit the scene
@@ -33,6 +33,7 @@ fn spawn_lighting(mut commands: Commands) {
                 ..default()
             },
             ..default()
-        })
-        .insert(Name::new("Main Light"));
+        },
+        Name::new("Main Light"),
+    ));
 }

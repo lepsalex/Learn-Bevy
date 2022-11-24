@@ -14,6 +14,7 @@ impl Plugin for UiPlugin {
 /*
    UI SPECIFIC ASSETS (ON STARTUP)
 */
+#[derive(Resource)]
 pub struct UiAssets {
     pub tower_cannon_icon: Handle<Image>,
     pub tower_catapult_icon: Handle<Image>,
@@ -33,20 +34,19 @@ fn ui(mut commands: Commands, ui_assets: Res<UiAssets>) {
     let towers = [TowerType::Cannon, TowerType::Catapult, TowerType::Blaster];
 
     commands
-        .spawn_bundle(NodeBundle {
+        .spawn(NodeBundle {
             style: Style {
                 size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
                 padding: UiRect::all(Val::Px(16.0)),
                 justify_content: JustifyContent::FlexEnd,
                 ..default()
             },
-            color: Color::NONE.into(),
             ..default()
         })
         .with_children(|commands| {
             for tower_type in towers {
-                commands
-                    .spawn_bundle(ButtonBundle {
+                commands.spawn((
+                    ButtonBundle {
                         style: Style {
                             size: Size::new(Val::Px(64.0), Val::Px(64.0)),
                             align_self: AlignSelf::FlexStart,
@@ -59,8 +59,9 @@ fn ui(mut commands: Commands, ui_assets: Res<UiAssets>) {
                             TowerType::Blaster => ui_assets.tower_blaster_icon.clone().into(),
                         },
                         ..default()
-                    })
-                    .insert(tower_type);
+                    },
+                    tower_type,
+                ));
             }
         });
 }

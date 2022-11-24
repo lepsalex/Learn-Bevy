@@ -8,6 +8,7 @@ impl Plugin for AssetsPlugin {
     }
 }
 
+#[derive(Resource)]
 pub struct GameAssets {
     pub level_0: Handle<Scene>,
     pub tower_scene: Handle<Scene>,

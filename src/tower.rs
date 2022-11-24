@@ -42,60 +42,54 @@ pub fn spawn_tower(
     assets: &GameAssets,
     position: Vec3,
 ) -> Entity {
-    let mut common_cmds = commands.spawn_bundle(SpatialBundle::from_transform(
-        Transform::from_translation(position),
-    ));
+    // Tower spawn position needs a slight offset in the y axis
+    let offset_tower_position = Transform::from_xyz(position.x, position.y + 0.1, position.z);
 
     match tower_type {
-        TowerType::Cannon => common_cmds
-            .insert(Name::new("Tower (Cannon)"))
-            .insert(TowerType::Cannon)
-            .insert(Tower {
-                shooting_timer: Timer::from_seconds(2.0, true),
+        TowerType::Cannon => commands.spawn((
+            SceneBundle {
+                scene: assets.tower_cannon_scene.clone(),
+                transform: offset_tower_position,
+                ..default()
+            },
+            Name::new("Tower (Cannon)"),
+            TowerType::Cannon,
+            Tower {
+                shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
-            })
-            .with_children(|commands| {
-                commands.spawn_bundle(SceneBundle {
-                    scene: assets.tower_cannon_scene.clone(),
-                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
-                    ..default()
-                });
-            })
-            .id(),
-        TowerType::Catapult => common_cmds
-            .insert(Name::new("Tower (Catapult)"))
-            .insert(TowerType::Catapult)
-            .insert(Tower {
-                shooting_timer: Timer::from_seconds(2.0, true),
+            },
+        )),
+        TowerType::Catapult => commands.spawn((
+            SceneBundle {
+                scene: assets.tower_catapult_scene.clone(),
+                transform: offset_tower_position,
+                ..default()
+            },
+            Name::new("Tower (Catapult)"),
+            TowerType::Catapult,
+            Tower {
+                shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
-            })
-            .with_children(|commands| {
-                commands.spawn_bundle(SceneBundle {
-                    scene: assets.tower_catapult_scene.clone(),
-                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
-                    ..default()
-                });
-            })
-            .id(),
-        TowerType::Blaster => common_cmds
-            .insert(Name::new("Tower (Blaster)"))
-            .insert(TowerType::Blaster)
-            .insert(Tower {
-                shooting_timer: Timer::from_seconds(2.0, true),
+            },
+        )),
+        TowerType::Blaster => commands.spawn((
+            SceneBundle {
+                scene: assets.tower_blaster_scene.clone(),
+                transform: offset_tower_position,
+                ..default()
+            },
+            Name::new("Tower (Blaster)"),
+            TowerType::Blaster,
+            Tower {
+                shooting_timer: Timer::from_seconds(2.0, TimerMode::Repeating),
                 projectile_offset: Vec3::new(0.0, 0.6, 0.0),
                 range: 3.0,
-            })
-            .with_children(|commands| {
-                commands.spawn_bundle(SceneBundle {
-                    scene: assets.tower_blaster_scene.clone(),
-                    transform: Transform::from_xyz(0.0, 0.1, 0.0),
-                    ..default()
-                });
-            })
-            .id(),
+            },
+        )),
     }
+    .id()
 }
 
 fn tower_shooting(
@@ -131,34 +125,30 @@ fn tower_shooting(
                     let time_to_target = distance / projectile_speed;
                     let prediction_vector =
                         closest_target.forward() * nav_agent.move_speed * time_to_target;
-                    
+
                     // predicted location - projectile spawn = projectile direction vector
                     return closest_target.translation() + prediction_vector - projectile_spawn;
                 });
 
             if let Some(bullet_direction) = projectile_direction {
                 commands.entity(tower_entity).with_children(|commands| {
-                    commands
-                        .spawn_bundle(SpatialBundle {
+                    commands.spawn((
+                        SceneBundle {
+                            scene: game_assets.cannon_ball_scene.clone(),
                             transform: Transform::from_translation(tower.projectile_offset),
                             ..default()
-                        })
-                        .insert(Name::new("Bullet"))
-                        .insert(Lifetime {
-                            timer: Timer::from_seconds(10.0, false),
-                        })
-                        .insert(Projectile {
+                        },
+                        Name::new("Bullet"),
+                        Lifetime {
+                            timer: Timer::from_seconds(10.0, TimerMode::Once),
+                        },
+                        Projectile {
                             direction: bullet_direction,
                             speed: projectile_speed,
                             damage: 1,
-                        })
-                        .insert_bundle(PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)))
-                        .with_children(|commands| {
-                            commands.spawn_bundle(SceneBundle {
-                                scene: game_assets.cannon_ball_scene.clone(),
-                                ..default()
-                            });
-                        });
+                        },
+                        PhysicsBundle::moving_entity_cube(Vec3::new(0.2, 0.2, 0.)),
+                    ));
                 });
             }
         }
